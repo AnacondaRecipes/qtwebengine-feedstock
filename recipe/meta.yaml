@@ -20,7 +20,13 @@ source:
       - patches/0008-chromium-fix-readelf-path.patch
       - patches/0009-chromium-work-around-msvc-17.10-bug.patch
       # https://github.com/carsten-grimm-at-ipolog/vcpkg/blob/master/ports/qtwebengine/add-include-string.patch
-      - patches/0010-gn-add-include-string.patch  # [win]
+      - patches/0010-gn-add-include-string.patch             # [win]
+      - patches/0011-downgrade-chromium.patch                # [linux]
+  - git_url: https://github.com/qt/qtwebengine-chromium.git  # [linux]
+    git_rev: 34ec0d3e7bacfea89889641a8f4320d8ffcfa9af        # [linux]
+    folder: 3rdparty                                         # [linux]
+    patches:                                                 # [linux]
+      - patches/0012-update-chromium-python-deps.patch       # [linux]
 
 build:
   number: 0
@@ -56,6 +62,7 @@ requirements:
     - {{ cdt('libxxf86vm-devel') }}           # [linux]
     - {{ cdt('mesa-libgl-devel') }}           # [linux]
     - {{ cdt('mesa-libgbm') }}                # [linux]
+    - {{ cdt('mesa-libgbm-devel') }}                         # [linux]
     - {{ cdt('mesa-libegl-devel') }}          # [linux]
     - {{ cdt('mesa-dri-drivers') }}           # [linux]
     - {{ cdt('xcb-util-devel') }}             # [linux]

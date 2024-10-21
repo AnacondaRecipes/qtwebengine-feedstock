@@ -3,6 +3,9 @@
 set -ex
 
 if [[ "${target_platform}" == linux-* ]]; then
+  rm -rf qtwebengine/src/3rdparty
+  cp -r 3rdparty qtwebengine/src/
+
   CMAKE_ARGS="
     ${CMAKE_ARGS}
     -DQT_FEATURE_webengine_ozone_x11=ON
@@ -42,13 +45,14 @@ cmake -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS} \
   -DINSTALL_INCLUDEDIR=include/qt6 \
   -DINSTALL_MKSPECSDIR=lib/qt6/mkspecs \
   -DINSTALL_EXAMPLESDIR=share/doc/qt6/examples \
+  -DQT_FEATURE_qtpdf_build=ON \
+  -DQT_FEATURE_qtpdf_quick_build=ON \
+  -DQT_FEATURE_qtpdf_widgets_build=ON \
   -DQT_FEATURE_qtwebengine_build=ON \
   -DQT_FEATURE_qtwebengine_core_build=ON \
   -DQT_FEATURE_qtwebengine_quick_build=ON \
   -DQT_FEATURE_qtwebengine_widgets_build=ON \
-  -DQT_FEATURE_qtpdf_build=ON \
-  -DQT_FEATURE_qtpdf_quick_build=ON \
-  -DQT_FEATURE_qtpdf_widgets_build=ON \
+  -DQT_FEATURE_webengine_gnome_keyring=OFF \
   -DQT_FEATURE_webengine_jumbo_build=OFF \
   -DQT_FEATURE_webengine_pepper_plugins=ON \
   -DQT_FEATURE_webengine_printing_and_pdf=ON \
@@ -69,6 +73,7 @@ cmake -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS} \
   -DQT_FEATURE_webengine_system_libtiff=ON \
   -DQT_FEATURE_webengine_system_libwebp=ON \
   -DQT_FEATURE_webengine_system_libxml=ON \
+  -DQT_FEATURE_webengine_system_minigbm=ON \
   -DQT_FEATURE_webengine_system_minizip=ON \
   -DQT_FEATURE_webengine_system_opus=ON \
   -DQT_FEATURE_webengine_system_poppler=ON \

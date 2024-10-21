@@ -1,0 +1,58 @@
+diff --git a/chromium/build/android/gyp/util/build_utils.py b/chromium/build/android/gyp/util/build_utils.py
+index d52977f..3cca95c 100644
+--- a/chromium/build/android/gyp/util/build_utils.py
++++ b/chromium/build/android/gyp/util/build_utils.py
+@@ -12,7 +12,6 @@ import fnmatch
+ import json
+ import logging
+ import os
+-import pipes
+ import re
+ import shlex
+ import shutil
+@@ -20,6 +19,7 @@ import stat
+ import subprocess
+ import sys
+ import tempfile
++import textwrap
+ import time
+ import zipfile
+
+@@ -197,9 +197,14 @@ class CalledProcessError(Exception):
+
+   def __str__(self):
+     # A user should be able to simply copy and paste the command that failed
+-    # into their shell.
++    # into their shell (unless it is more than 200 chars).
++    # User can set PRINT_FULL_COMMAND=1 to always print the full command.
++    print_full = os.environ.get('PRINT_FULL_COMMAND', '0') != '0'
++    full_cmd = shlex.join(self.args)
++    short_cmd = textwrap.shorten(full_cmd, width=200)
++    printed_cmd = full_cmd if print_full else short_cmd
+     copyable_command = '( cd {}; {} )'.format(os.path.abspath(self.cwd),
+-        ' '.join(map(pipes.quote, self.args)))
++                                              printed_cmd)
+     return 'Command failed: {}\n{}'.format(copyable_command, self.output)
+
+
+diff --git a/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc b/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+index 8803b20..49e3253 100644
+--- a/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
++++ b/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+@@ -68,6 +68,16 @@
+ #define PROT_BTI 0x10
+ #endif
+
++// from fcntl.h
++#ifndef F_ADD_SEALS
++#define F_ADD_SEALS 1033
++#define F_GET_SEALS 1034
++#define F_SEAL_SEAL 0x0001
++#define F_SEAL_SHRINK 0x0002
++#define F_SEAL_GROW 0x0004
++#define F_SEAL_WRITE 0x0008
++#endif
++
+ namespace {
+
+ inline bool IsArchitectureX86_64() {
