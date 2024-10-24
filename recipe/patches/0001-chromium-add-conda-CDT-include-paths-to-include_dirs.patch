@@ -1,0 +1,27 @@
+From 57e70fb2939330a1dc413f018a5b5336ebe2974e Mon Sep 17 00:00:00 2001
+From: Rafael Martins <rmartins@anaconda.com>
+Date: Tue, 16 Jul 2024 23:10:51 +0200
+Subject: [PATCH 1/6] chromium: add conda CDT include paths to include_dirs
+
+cmake won't properly pass the include dirs to gn. we need to help it
+find our headers.
+---
+ src/3rdparty/chromium/build/config/compiler/BUILD.gn | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/3rdparty/chromium/build/config/compiler/BUILD.gn b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+index bcc97108b..f84982343 100644
+--- a/src/3rdparty/chromium/build/config/compiler/BUILD.gn
++++ b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+@@ -254,6 +254,8 @@ assert(!(llvm_force_head_revision && use_remoteexec),
+ # this and specify their own include paths.
+ config("default_include_dirs") {
+   include_dirs = [
++    getenv("BUILD_PREFIX") + "/" + getenv("HOST") + "/sysroot/usr/include",
++    getenv("BUILD_PREFIX") + "/include/c++/v1",
+     root_gen_dir,
+     "//",
+   ]
+-- 
+2.39.2 (Apple Git-143)
+

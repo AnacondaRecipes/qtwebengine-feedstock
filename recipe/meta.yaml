@@ -1,0 +1,139 @@
+{% set name = "qtwebengine" %}
+{% set version = "6.7.2" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
+    sha256: c7755875594d8be382b07bf3634d44fd77012805794d8b588891709a6405ffd1
+    folder: {{ name }}
+    patches:
+      - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
+      - patches/0002-chromium-force-bundled-libdrm-for-linux.patch
+      - patches/0003-allow-building-with-non-apple-clang-version.patch
+      - patches/0004-chromium-force-settings-to-build-without-xcode.patch
+      - patches/0005-chromium-avoid-using-macos-12-13-14-symbols.patch
+      - patches/0006-chromium-added-missing-headers.patch
+      - patches/0007-chromium-disable-glib-usage-for-linux-aarch64.patch
+      - patches/0008-chromium-fix-readelf-path.patch
+      - patches/0009-chromium-work-around-msvc-17.10-bug.patch
+      # https://github.com/carsten-grimm-at-ipolog/vcpkg/blob/master/ports/qtwebengine/add-include-string.patch
+      - patches/0010-gn-add-include-string.patch             # [win]
+      - patches/0011-downgrade-chromium.patch                # [linux]
+  - git_url: https://github.com/qt/qtwebengine-chromium.git  # [linux]
+    git_rev: 34ec0d3e7bacfea89889641a8f4320d8ffcfa9af        # [linux]
+    folder: 3rdparty                                         # [linux]
+    patches:                                                 # [linux]
+      - patches/0012-update-chromium-python-deps.patch       # [linux]
+
+build:
+  number: 0
+  skip: True  # [ppc64le or s390x]
+  run_exports:
+    - {{ pin_subpackage(name, max_pin='x.x') }}
+  ignore_run_exports:
+    - dbus    # [unix]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ cdt('alsa-lib-devel') }}             # [linux]
+    - {{ cdt('cups-devel') }}                 # [linux]
+    - {{ cdt('expat-devel') }}                # [linux and not aarch64]
+    - {{ cdt('gtk2-devel') }}                 # [linux]
+    - {{ cdt('gtkmm24-devel') }}              # [linux]
+#    - {{ cdt('libdrm-devel') }}               # [linux]
+    - {{ cdt('libglvnd-glx') }}               # [linux and not x86_64]
+    - {{ cdt('libglvnd-egl') }}               # [linux and not x86_64]
+    - {{ cdt('libice-devel') }}               # [linux]
+    - {{ cdt('libselinux-devel') }}           # [linux]
+    - {{ cdt('libsm-devel') }}                # [linux]
+    - {{ cdt('libx11-devel') }}               # [linux]
+    - {{ cdt('libxau-devel') }}               # [linux]
+    - {{ cdt('libxcb') }}                     # [linux]
+    - {{ cdt('libxext-devel') }}              # [linux]
+    - {{ cdt('libxfixes-devel') }}            # [linux]
+    - {{ cdt('libxkbfile-devel') }}           # [linux]
+    - {{ cdt('libxrender-devel') }}           # [linux]
+    - {{ cdt('libxscrnsaver-devel') }}        # [linux]
+    - {{ cdt('libxxf86vm-devel') }}           # [linux]
+    - {{ cdt('mesa-libgl-devel') }}           # [linux]
+    - {{ cdt('mesa-libgbm') }}                # [linux]
+    - {{ cdt('mesa-libgbm-devel') }}                         # [linux]
+    - {{ cdt('mesa-libegl-devel') }}          # [linux]
+    - {{ cdt('mesa-dri-drivers') }}           # [linux]
+    - {{ cdt('xcb-util-devel') }}             # [linux]
+    - {{ cdt('xcb-util-image-devel') }}       # [linux]
+    - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
+    - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
+    - {{ cdt('xcb-util-wm-devel') }}          # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
+    - {{ cdt('pciutils-devel') }}             # [linux]
+    - {{ cdt('libxcomposite-devel') }}        # [linux]
+    - {{ cdt('libxcursor-devel') }}           # [linux]
+    - {{ cdt('libxdamage-devel') }}           # [linux]
+    - {{ cdt('libxrandr-devel') }}            # [linux]
+    - {{ cdt('libxi-devel') }}                # [linux]
+    - {{ cdt('libxshmfence-devel') }}         # [linux]
+    - {{ cdt('libxtst-devel') }}              # [linux]
+    - pkg-config  # [unix]
+    - libtool     # [unix]
+    - bison       # [linux]
+    - flex        # [linux]
+    - gperf       # [linux]
+    - jom         # [win]
+    - m2-bison    # [win]
+    - m2-flex     # [win]
+    - m2-gperf    # [win]
+    - m2-patch    # [win]
+    - patch       # [unix]
+    - cmake
+    - ninja
+    - perl
+    - nodejs
+    - html5lib
+
+  host:
+    - qtbase {{ version }}
+    - qtdeclarative {{ version }}
+    - qtwebchannel {{ version }}
+    - qttools {{ version }}
+    - nss       # [linux]
+    - nspr      # [linux]
+    - dbus      # [unix]
+    - minizip   # [unix]
+    - libxml2   # [unix]
+    - libxslt   # [unix]
+    - libopus   # [unix]
+    - minizip   # [unix]
+    - html5lib
+    - poppler
+
+  run_constrained:
+    - qt-main >={{ version }},<7
+    - qt >={{ version }},<7
+
+test:
+  commands:
+    {% for each_qt_lib in ["Pdf", "PdfQuick", "PdfWidgets", "WebEngineCore", "WebEngineQuick", "WebEngineWidgets"] %}
+    - test -d $PREFIX/include/qt6/Qt{{ each_qt_lib }}                           # [unix]
+    - test -f $PREFIX/lib/libQt6{{ each_qt_lib }}${SHLIB_EXT}                   # [unix]
+    - if not exist %PREFIX%\\Library\\include\\qt6\\Qt{{ each_qt_lib }} exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\lib\\Qt6{{ each_qt_lib }}.lib exit 1      # [win]
+    - if not exist %PREFIX%\\Library\\bin\\Qt6{{ each_qt_lib }}.dll exit 1      # [win]
+    {% endfor %}
+
+about:
+  home: https://www.qt.io/
+  license: LGPL-3.0-only
+  license_file: {{ name }}/LICENSES/LGPL-3.0-only.txt
+  license_family: LGPL
+  summary: Cross-platform application and UI framework ({{ name[2:] }} libraries).
+  description: |
+    Qt helps you create connected devices, UIs & applications that run
+    anywhere on any device, on any operating system at any time ({{ name[2:] }} libraries).
+  doc_url: https://doc.qt.io/
+  dev_url: https://github.com/qt/{{ name }}

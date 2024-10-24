@@ -1,0 +1,27 @@
+From a0030f511c91f3d200b81cca99f82da290140271 Mon Sep 17 00:00:00 2001
+From: Rafael Martins <rmartins@anaconda.com>
+Date: Tue, 16 Jul 2024 23:11:03 +0200
+Subject: [PATCH 2/6] chromium: force bundled libdrm for linux
+
+chromium is not compatible with the libdrm version available in CDT from centos6 on
+linux-64. gn tries to enforce using the system version on linux.
+---
+ src/3rdparty/chromium/build/config/linux/libdrm/BUILD.gn | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/3rdparty/chromium/build/config/linux/libdrm/BUILD.gn b/src/3rdparty/chromium/build/config/linux/libdrm/BUILD.gn
+index 31ab0d8da..49fb0dccb 100644
+--- a/src/3rdparty/chromium/build/config/linux/libdrm/BUILD.gn
++++ b/src/3rdparty/chromium/build/config/linux/libdrm/BUILD.gn
+@@ -11,7 +11,7 @@ declare_args() {
+   # Controls whether the build should use the version of libdrm library shipped
+   # with the system. In release builds of desktop Linux and Chrome OS we use the
+   # system version. Some Chromecast devices use this as well.
+-  use_system_libdrm = is_chromeos_device || (is_linux && !is_castos)
++  use_system_libdrm = is_chromeos_device
+ }
+ 
+ if (use_system_libdrm) {
+-- 
+2.39.2 (Apple Git-143)
+
