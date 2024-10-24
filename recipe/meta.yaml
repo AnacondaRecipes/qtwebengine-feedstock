@@ -45,7 +45,7 @@ requirements:
     - {{ cdt('expat-devel') }}                # [linux and not aarch64]
     - {{ cdt('gtk2-devel') }}                 # [linux]
     - {{ cdt('gtkmm24-devel') }}              # [linux]
-    - {{ cdt('libdrm-devel') }}               # [linux]
+#    - {{ cdt('libdrm-devel') }}               # [linux]
     - {{ cdt('libglvnd-glx') }}               # [linux and not x86_64]
     - {{ cdt('libglvnd-egl') }}               # [linux and not x86_64]
     - {{ cdt('libice-devel') }}               # [linux]

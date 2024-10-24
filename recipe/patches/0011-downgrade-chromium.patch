@@ -9,26 +9,30 @@ index c43d69a..035978a 100644
 +Based on Chromium version:                                      112.0.5615.213
 +Patched with security patches up to Chromium version:           122.0.6261.128
 diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
-index e7432d0..99cec43 100644
+index e7432d0..48ebf87 100644
 --- a/src/core/CMakeLists.txt
 +++ b/src/core/CMakeLists.txt
-@@ -502,6 +502,14 @@ foreach(arch ${archs})
-                 CONDITION QT_FEATURE_webengine_vaapi
+@@ -513,6 +513,18 @@ foreach(arch ${archs})
+                 ARGS use_vaapi_x11
+                 CONDITION QT_FEATURE_webengine_ozone_x11 AND QT_FEATURE_webengine_vaapi
              )
-             extend_gn_list(gnArgArg
-+                    ARGS use_v4l2_codec
-+                    CONDITION QT_FEATURE_webengine_v4l2
-+            )
 +            extend_gn_list(gnArgArg
 +                    ARGS use_gnome_keyring
 +                    CONDITION QT_FEATURE_webengine_gnome_keyring
 +            )
 +            extend_gn_list(gnArgArg
-                 ARGS ozone_platform_x11 use_xkbcommon
-                 CONDITION QT_FEATURE_webengine_ozone_x11
-             )
++                    ARGS use_system_minigbm
++                    CONDITION QT_FEATURE_webengine_system_minigbm
++            )
++            extend_gn_list(gnArgArg
++                    ARGS use_system_libdrm
++                    CONDITION QT_FEATURE_webengine_system_libdrm
++            )
+
+             if(QT_FEATURE_webengine_kerberos)
+                 list(APPEND gnArgArg
 diff --git a/src/core/configure/BUILD.root.gn.in b/src/core/configure/BUILD.root.gn.in
-index 986db50..4eed0d4 100644
+index 986db50..93546bf 100644
 --- a/src/core/configure/BUILD.root.gn.in
 +++ b/src/core/configure/BUILD.root.gn.in
 @@ -267,7 +267,7 @@ source_set("qtwebengine_sources") {
@@ -40,6 +44,27 @@ index 986db50..4eed0d4 100644
      "//chrome/browser/resources/net_internals:resources",
      "//chrome/browser/signin:identity_manager_provider",
      "//chrome/common:buildflags",
+@@ -295,16 +295,16 @@ source_set("qtwebengine_sources") {
+     "//chrome/browser/gcm/gcm_profile_service_factory.h",
+     "//chrome/browser/gcm/instance_id/instance_id_profile_service_factory.cc",
+     "//chrome/browser/gcm/instance_id/instance_id_profile_service_factory.h",
+-    "//chrome/browser/media/webrtc/desktop_capturer_wrapper.cc",
+-    "//chrome/browser/media/webrtc/desktop_capturer_wrapper.h",
++#    "//chrome/browser/media/webrtc/desktop_capturer_wrapper.cc",
++#    "//chrome/browser/media/webrtc/desktop_capturer_wrapper.h",
+     "//chrome/browser/media/webrtc/desktop_media_list.cc",
+     "//chrome/browser/media/webrtc/desktop_media_list.h",
+     "//chrome/browser/media/webrtc/desktop_media_list_base.cc",
+     "//chrome/browser/media/webrtc/desktop_media_list_base.h",
+     "//chrome/browser/media/webrtc/native_desktop_media_list.cc",
+     "//chrome/browser/media/webrtc/native_desktop_media_list.h",
+-    "//chrome/browser/media/webrtc/thumbnail_capturer.cc",
+-    "//chrome/browser/media/webrtc/thumbnail_capturer.h",
++#    "//chrome/browser/media/webrtc/thumbnail_capturer.cc",
++#    "//chrome/browser/media/webrtc/thumbnail_capturer.h",
+     "//chrome/browser/net/chrome_mojo_proxy_resolver_factory.cc",
+     "//chrome/browser/net/chrome_mojo_proxy_resolver_factory.h",
+     "//chrome/browser/prefs/chrome_command_line_pref_store.cc",
 @@ -439,9 +439,9 @@ source_set("qtwebengine_sources") {
        "//chrome/browser/ui/webui/sandbox/sandbox_internals_ui.cc",
        "//chrome/browser/ui/webui/sandbox/sandbox_internals_ui.h",
@@ -53,6 +78,34 @@ index 986db50..4eed0d4 100644
    }
    if (is_win) {
      sources += [
+@@ -570,7 +570,7 @@ group("qtwebengine_resources") {
+ repack("qtwebengine_repack_resources") {
+   sources = [
+     "$root_gen_dir/qtwebengine/qt_webengine_resources.pak",
+-    "$root_gen_dir/chrome/accessibility_resources.pak",
++#    "$root_gen_dir/chrome/accessibility_resources.pak",
+     "$root_gen_dir/chrome/common_resources.pak",
+     "$root_gen_dir/chrome/dev_ui_browser_resources.pak",
+     "$root_gen_dir/chrome/net_internals_resources.pak",
+@@ -580,13 +580,13 @@ repack("qtwebengine_repack_resources") {
+     "$root_gen_dir/content/browser/resources/media/media_internals_resources.pak",
+     "$root_gen_dir/content/browser/tracing/tracing_resources.pak",
+     "$root_gen_dir/content/content_resources.pak",
+-    "$root_gen_dir/content/gpu_resources.pak",
+-    "$root_gen_dir/content/histograms_resources.pak",
++#    "$root_gen_dir/content/gpu_resources.pak",
++#    "$root_gen_dir/content/histograms_resources.pak",
+     "$root_gen_dir/content/indexed_db_resources.pak",
+-    "$root_gen_dir/content/network_errors_resources.pak",
+-    "$root_gen_dir/content/process_resources.pak",
++#    "$root_gen_dir/content/network_errors_resources.pak",
++#    "$root_gen_dir/content/process_resources.pak",
+     "$root_gen_dir/content/quota_internals_resources.pak",
+-    "$root_gen_dir/content/service_worker_resources.pak",
++#    "$root_gen_dir/content/service_worker_resources.pak",
+     "$root_gen_dir/mojo/public/js/mojo_bindings_resources.pak",
+     "$root_gen_dir/net/net_resources.pak",
+     "$root_gen_dir/third_party/blink/public/resources/blink_resources.pak",
 @@ -596,20 +596,20 @@ repack("qtwebengine_repack_resources") {
    deps = [
       "//qtwebengine/browser:qt_webengine_resources",
@@ -80,13 +133,19 @@ index 986db50..4eed0d4 100644
       "//content/browser/tracing:resources",
       "//content:content_resources",
       "//mojo/public/js:resources",
-@@ -657,9 +657,9 @@ repack("qtwebengine_repack_resources") {
-     sources += [
-       "$root_gen_dir/chrome/sandbox_internals_resources.pak",
+@@ -654,12 +654,12 @@ repack("qtwebengine_repack_resources") {
      ]
+   }
+   if (is_linux || is_win) {
+-    sources += [
+-      "$root_gen_dir/chrome/sandbox_internals_resources.pak",
+-    ]
 -    deps += [
 -      "//chrome/browser/resources/sandbox_internals:resources_grit",
 -    ]
++#    sources += [
++#      "$root_gen_dir/chrome/sandbox_internals_resources.pak",
++#    ]
 +#    deps += [
 +#      "//chrome/browser/resources/sandbox_internals:resources_grit",
 +#    ]
@@ -107,21 +166,22 @@ index d14cc93..faf9bd5 100644
 
  QT_END_NAMESPACE
 diff --git a/src/pdf/CMakeLists.txt b/src/pdf/CMakeLists.txt
-index 37c32ef..81eabcf 100644
+index 37c32ef..2abe732 100644
 --- a/src/pdf/CMakeLists.txt
 +++ b/src/pdf/CMakeLists.txt
-@@ -153,6 +153,14 @@ foreach(arch ${archs})
+@@ -153,6 +153,15 @@ foreach(arch ${archs})
                  ARGS use_system_libopenjpeg2
                  CONDITION QT_FEATURE_webengine_system_libopenjpeg2
              )
 +            extend_gn_list(gnArgArg
-+                    ARGS use_v4l2_codec
-+                    CONDITION QT_FEATURE_webengine_v4l2
-+            )
-+            extend_gn_list(gnArgArg
 +                    ARGS use_gnome_keyring
 +                    CONDITION QT_FEATURE_webengine_gnome_keyring
 +            )
++            extend_gn_list(gnArgArg
++                    ARGS use_system_libdrm
++                    CONDITION QT_FEATURE_webengine_system_libdrm
++            )
++
          endif()
          if(MACOS)
              list(APPEND gnArgArg angle_enable_vulkan=false)

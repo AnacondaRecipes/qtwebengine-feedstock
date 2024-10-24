@@ -6,6 +6,11 @@ if [[ "${target_platform}" == linux-* ]]; then
   rm -rf qtwebengine/src/3rdparty
   cp -r 3rdparty qtwebengine/src/
 
+  cp /usr/include/gbm.h ${BUILD_PREFIX}/include/
+  cp /usr/include/gbm.h ${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usr/include/
+  cp /usr/include/gbm.h ${BUILD_PREFIX}/${HOST}/sysroot/usr/include/
+  cp /usr/include/gbm.h ${PREFIX}/include/
+
   CMAKE_ARGS="
     ${CMAKE_ARGS}
     -DQT_FEATURE_webengine_ozone_x11=ON
@@ -66,6 +71,7 @@ cmake -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS} \
   -DQT_FEATURE_webengine_system_glib=OFF \
   -DQT_FEATURE_webengine_system_harfbuzz=OFF \
   -DQT_FEATURE_webengine_system_icu=ON \
+  -DQT_FEATURE_webengine_system_libdrm=OFF \
   -DQT_FEATURE_webengine_system_libevent=OFF \
   -DQT_FEATURE_webengine_system_libjpeg=OFF \
   -DQT_FEATURE_webengine_system_libpci=OFF \
