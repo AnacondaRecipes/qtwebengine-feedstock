@@ -35,23 +35,60 @@ index d52977f..3cca95c 100644
      return 'Command failed: {}\n{}'.format(copyable_command, self.output)
 
 
+diff --git a/chromium/mojo/core/channel_linux.cc b/chromium/mojo/core/channel_linux.cc
+index 094278a..68b0e07 100644
+--- a/chromium/mojo/core/channel_linux.cc
++++ b/chromium/mojo/core/channel_linux.cc
+@@ -5,6 +5,7 @@
+ #include "mojo/core/channel_linux.h"
+
+ #include <fcntl.h>
++#include <linux/fcntl.h>
+ #include <linux/futex.h>
+ #include <linux/memfd.h>
+ #include <sys/eventfd.h>
+@@ -49,6 +50,16 @@
+ #define EFD_ZERO_ON_WAKE O_NOFOLLOW
+ #endif
+
++// from fcntl.h
++//#ifndef F_ADD_SEALS
++//#define F_ADD_SEALS 1033
++//#define F_GET_SEALS 1034
++//#define F_SEAL_SEAL 0x0001
++//#define F_SEAL_SHRINK 0x0002
++//#define F_SEAL_GROW 0x0004
++//#define F_SEAL_WRITE 0x0008
++//#endif
++
+ namespace mojo {
+ namespace core {
+
 diff --git a/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc b/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
-index 8803b20..49e3253 100644
+index 8803b20..9b99bbf 100644
 --- a/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
 +++ b/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
-@@ -68,6 +68,16 @@
+@@ -6,6 +6,7 @@
+
+ #include <errno.h>
+ #include <fcntl.h>
++#include <linux/fcntl.h>
+ #include <linux/net.h>
+ #include <sched.h>
+ #include <signal.h>
+@@ -68,6 +69,16 @@
  #define PROT_BTI 0x10
  #endif
 
 +// from fcntl.h
-+#ifndef F_ADD_SEALS
-+#define F_ADD_SEALS 1033
-+#define F_GET_SEALS 1034
-+#define F_SEAL_SEAL 0x0001
-+#define F_SEAL_SHRINK 0x0002
-+#define F_SEAL_GROW 0x0004
-+#define F_SEAL_WRITE 0x0008
-+#endif
++//#ifndef F_ADD_SEALS
++//#define F_ADD_SEALS 1033
++//#define F_GET_SEALS 1034
++//#define F_SEAL_SEAL 0x0001
++//#define F_SEAL_SHRINK 0x0002
++//#define F_SEAL_GROW 0x0004
++//#define F_SEAL_WRITE 0x0008
++//#endif
 +
  namespace {
 

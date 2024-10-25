@@ -83,7 +83,7 @@ cmake -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS} \
   -DQT_FEATURE_webengine_system_minizip=ON \
   -DQT_FEATURE_webengine_system_opus=ON \
   -DQT_FEATURE_webengine_system_poppler=ON \
-  -DQT_FEATURE_webengine_system_snappy=ON \
+  -DQT_FEATURE_webengine_system_snappy=OFF \
   -DQT_FEATURE_webengine_system_zlib=OFF
 
 cmake --build build --target install
