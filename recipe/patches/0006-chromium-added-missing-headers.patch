@@ -1,0 +1,86 @@
+From 655aefa7a6a2e8453b20b2420382d3654a0a2916 Mon Sep 17 00:00:00 2001
+From: Brian Wing <bwing@anaconda.com>
+Date: Wed, 4 Dec 2024 15:00:43 -0500
+Subject: [PATCH 6/6] chromium: added missing headers
+
+---
+ chromium/mojo/core/channel_linux.cc                    | 10 ++++++++++
+ .../syscall_parameters_restrictions.cc                 |  2 +-
+ .../ui/events/gesture_detection/motion_event_generic.h |  2 ++
+ src/3rdparty/chromium/ui/gl/gl_context.h               |  1 +
+ src/3rdparty/chromium/ui/gl/gl_display.h               |  1 +
+ 5 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/src/3rdparty/chromium/mojo/core/channel_linux.cc b/src/3rdparty/chromium/mojo/core/channel_linux.cc
+index b2ee0dd8a17..61cb8881fc1 100644
+--- a/src/3rdparty/chromium/mojo/core/channel_linux.cc
++++ b/src/3rdparty/chromium/mojo/core/channel_linux.cc
+@@ -49,6 +49,16 @@
+ #define EFD_ZERO_ON_WAKE O_NOFOLLOW
+ #endif
+
++// from fcntl.h
++#ifndef F_ADD_SEALS
++#define F_ADD_SEALS 1033
++#define F_GET_SEALS 1034
++#define F_SEAL_SEAL 0x0001
++#define F_SEAL_SHRINK 0x0002
++#define F_SEAL_GROW 0x0004
++#define F_SEAL_WRITE 0x0008
++#endif
++
+ namespace mojo {
+ namespace core {
+
+diff --git a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+index ba995ace6d4..bc472162ee0 100644
+--- a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
++++ b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+@@ -5,7 +5,7 @@
+ #include "sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.h"
+
+ #include <errno.h>
+-#include <fcntl.h>
++#include <linux/fcntl.h>
+ #include <linux/net.h>
+ #include <sched.h>
+ #include <signal.h>
+diff --git a/src/3rdparty/chromium/ui/events/gesture_detection/motion_event_generic.h b/src/3rdparty/chromium/ui/events/gesture_detection/motion_event_generic.h
+index 5460f7f8adf..e7688b4d4f9 100644
+--- a/src/3rdparty/chromium/ui/events/gesture_detection/motion_event_generic.h
++++ b/src/3rdparty/chromium/ui/events/gesture_detection/motion_event_generic.h
+@@ -7,6 +7,8 @@
+
+ #include <stddef.h>
+ #include <stdint.h>
++#include <vector>
++#include <memory>
+
+ #include "base/time/time.h"
+ #include "third_party/abseil-cpp/absl/container/inlined_vector.h"
+diff --git a/src/3rdparty/chromium/ui/gl/gl_context.h b/src/3rdparty/chromium/ui/gl/gl_context.h
+index dcbf54a0198..9596bd8c5cd 100644
+--- a/src/3rdparty/chromium/ui/gl/gl_context.h
++++ b/src/3rdparty/chromium/ui/gl/gl_context.h
+@@ -21,6 +21,7 @@
+ #include "ui/gl/gl_implementation_wrapper.h"
+ #include "ui/gl/gl_share_group.h"
+ #include "ui/gl/gl_state_restorer.h"
++#include "ui/gl/gl_surface.h"
+ #include "ui/gl/gl_workarounds.h"
+ #include "ui/gl/gpu_preference.h"
+
+diff --git a/src/3rdparty/chromium/ui/gl/gl_display.h b/src/3rdparty/chromium/ui/gl/gl_display.h
+index 64f4bbed656..b74edae8975 100644
+--- a/src/3rdparty/chromium/ui/gl/gl_display.h
++++ b/src/3rdparty/chromium/ui/gl/gl_display.h
+@@ -11,6 +11,7 @@
+ #include <vector>
+
+ #include "ui/gl/gl_export.h"
++#include "ui/gl/gpu_preference.h"
+
+ #if defined(USE_EGL)
+ #include <EGL/egl.h>
+--
+2.45.2

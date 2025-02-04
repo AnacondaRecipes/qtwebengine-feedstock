@@ -1,0 +1,30 @@
+From 53690e2c164793bd1062fae746fe73129e2122d6 Mon Sep 17 00:00:00 2001
+From: Brian Wing <bwing@anaconda.com>
+Date: Wed, 4 Dec 2024 14:49:21 -0500
+Subject: [PATCH] Add gn args for libxslt and libwebp
+
+---
+ src/core/CMakeLists.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index e7432d0c7..35b6aef66 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -513,6 +513,14 @@ foreach(arch ${archs})
+                 ARGS use_vaapi_x11
+                 CONDITION QT_FEATURE_webengine_ozone_x11 AND QT_FEATURE_webengine_vaapi
+             )
++            extend_gn_list(gnArgArg
++                    ARGS use_system_libxslt
++                    CONDITION QT_FEATURE_webengine_system_libxslt
++            )
++            extend_gn_list(gnArgArg
++                    ARGS use_system_libwebp
++                    CONDITION QT_FEATURE_webengine_system_libwebp
++            )
+ 
+             if(QT_FEATURE_webengine_kerberos)
+                 list(APPEND gnArgArg
+-- 
+2.45.2
