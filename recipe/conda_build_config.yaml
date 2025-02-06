@@ -1,0 +1,9 @@
+# Need newer OSX SDK for proper AVFAudio/AVFAudio.h pathing.
+MACOSX_SDK_VERSION:
+  - '11.3'                                                   # [osx]
+CONDA_BUILD_SYSROOT:
+  - /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk  # [osx]
+c_compiler:
+  - vs2022  # [win]
+cxx_compiler:
+  - vs2022  # [win]
