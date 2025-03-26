@@ -31,7 +31,7 @@ source:
     sha256: f254eec5d3166d02e08ad4cc36f2bc5bf75a952fe06f9a2df1721783ee6f48b1  # [linux and aarch64]
 
 build:
-  number: 0
+  number: 1
   skip: True  # [s390x]
   skip: True  # [osx and x86_64]
   run_exports:
@@ -129,7 +129,7 @@ requirements:
     - libxslt {{ libxslt }}        # [win]
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
-    - libtiff {{ libtiff }}
+    - libtiff 4.7.0
     - minizip 4.0.3
     - poppler 24
 
