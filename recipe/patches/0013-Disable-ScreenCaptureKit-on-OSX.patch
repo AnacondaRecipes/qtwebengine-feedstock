@@ -1,0 +1,25 @@
+From 70656f460cd46ccb2213e3cc88af7491134717c2 Mon Sep 17 00:00:00 2001
+From: Brian Wing <bwing@anaconda.com>
+Date: Thu, 27 Mar 2025 13:56:53 -0400
+Subject: [PATCH] Disable ScreenCaptureKit on OSX
+
+---
+ src/3rdparty/chromium/media/media_options.gni | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/3rdparty/chromium/media/media_options.gni b/src/3rdparty/chromium/media/media_options.gni
+index e1110f70170d..038cc5cacf63 100644
+--- a/src/3rdparty/chromium/media/media_options.gni
++++ b/src/3rdparty/chromium/media/media_options.gni
+@@ -125,7 +125,7 @@ declare_args() {
+ 
+   # Enable the use of ScreenCaptureKit framework on macOS. A stable ScreenCaptureKit is available
+   # from macOS 13.2. Enabled by default for all build.
+-  use_sck = true
++  use_sck = false
+ }
+ 
+ # Use another declare_args() to allow dependence on args defined above.
+-- 
+2.47.2
+
