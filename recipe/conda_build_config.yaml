@@ -3,7 +3,8 @@ MACOSX_SDK_VERSION:
   - '11.3'                                                   # [osx]
 CONDA_BUILD_SYSROOT:
   - /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk  # [osx]
-# c_compiler:
-#   - vs2022  # [win]
-# cxx_compiler:
-#   - vs2022  # [win]
+# vs2019 fails with the error "C2061: syntax error: identifier 'FILE_INFO_BY_HANDLE_CLASS'""
+c_compiler:
+  - vs2022  # [win]
+cxx_compiler:
+  - vs2022  # [win]
