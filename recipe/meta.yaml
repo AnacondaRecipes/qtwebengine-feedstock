@@ -25,10 +25,11 @@ source:
       - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
 
   - folder: kernel_headers  # [linux]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-547.el9.x86_64.rpm    # [linux and x86_64]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-5.14.0-547.el9.aarch64.rpm  # [linux and aarch64]
-    sha256: def18a899bfe85c17e9bc1a5512930f100ffc18a7eb233a8d1017b14fd7b547c  # [linux and x86_64]
-    sha256: f254eec5d3166d02e08ad4cc36f2bc5bf75a952fe06f9a2df1721783ee6f48b1  # [linux and aarch64]
+    # Note: these URL can be deleted by the CentOS in a few months
+    url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-573.el9.x86_64.rpm    # [linux and x86_64]
+    url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-5.14.0-573.el9.aarch64.rpm  # [linux and aarch64]
+    sha256: 5387dac519fac54cb0afb5e55997d5c535c4c9bca82cad26d8e164a6a613acf6  # [linux and x86_64]
+    sha256: 4a7a5d00168e9c6949e9b3e3c4aa684aa9e8e2ffedf66e1c59b6d3f3986b862d  # [linux and aarch64]
 
 build:
   number: 1
