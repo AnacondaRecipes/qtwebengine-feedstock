@@ -34,7 +34,8 @@ source:
 build:
   number: 1
   skip: True  # [s390x]
-  skip: True  # [osx and x86_64]
+  # TODO: debug win
+  skip: True  # [osx and x86_64 or not win]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
   ignore_run_exports_from:
