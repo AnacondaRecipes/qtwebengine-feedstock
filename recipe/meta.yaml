@@ -131,7 +131,7 @@ requirements:
     - libxslt {{ libxslt }}        # [win]
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
-    - libtiff 4.7.0
+    - libtiff {{ libtiff }}
     - minizip 4.0.3
     - poppler 24
 
