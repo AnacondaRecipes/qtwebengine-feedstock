@@ -6,8 +6,10 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: c7755875594d8be382b07bf3634d44fd77012805794d8b588891709a6405ffd1
+  - url: https://github.com/qt/qtwebengine/archive/refs/tags/v{{ version }}.tar.gz
+  # TODO: Use official releases page again once moving to a LTS.
+  #  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
+    sha256: 551bb9bc8734b13f1bed8888917d930008f3976ca12171a25fffbc2964eacce4
     folder: {{ name }}
     patches:
       - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
@@ -30,6 +32,10 @@ source:
     url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-5.14.0-573.el9.aarch64.rpm  # [linux and aarch64]
     sha256: 5387dac519fac54cb0afb5e55997d5c535c4c9bca82cad26d8e164a6a613acf6  # [linux and x86_64]
     sha256: 4a7a5d00168e9c6949e9b3e3c4aa684aa9e8e2ffedf66e1c59b6d3f3986b862d  # [linux and aarch64]
+
+  - url: https://raw.githubusercontent.com/qt/qtwebengine-chromium/refs/heads/33.0.1750.170-based/chromium/net/http/transport_security_state_static.h  # [win]
+    sha256: 1648f487ae775518b4ec171666d028222f57e40d7d69fb2a1d3e6cc7282af582  # [win]
+    folder: pregenerated_files  # [win]
 
 build:
   number: 1
@@ -131,7 +137,7 @@ requirements:
     - libxslt {{ libxslt }}        # [win]
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
-    - libtiff {{ libtiff }}
+    - libtiff 4.7.0
     - minizip 4.0.3
     - poppler 24
 

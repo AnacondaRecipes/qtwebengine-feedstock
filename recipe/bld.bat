@@ -1,6 +1,12 @@
 @REM https://bugreports.qt.io/browse/QTBUG-107009
 set "PATH=%SRC_DIR%\build\lib\qt6\bin;%PATH%"
 
+REM Copy transport_security_state_static.h to solve the problem with generating it from archive.
+if exist "pregenerated_files\transport_security_state_static.h" (
+    mkdir -p %SRC_DIR%\build\src\core\Release\AMD64\gen\net\http\
+    copy "pregenerated_files\transport_security_state_static.h" "%SRC_DIR%\build\src\core\Release\AMD64\gen\net\http\"
+)
+
 :: QT_FEATURE_webengine_system_icu has to be OFF or else icudtl.dat doesn't get installed
 :: https://github.com/qt/qtwebengine/blob/6.7.2/src/core/api/CMakeLists.txt#L171
 cmake -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
