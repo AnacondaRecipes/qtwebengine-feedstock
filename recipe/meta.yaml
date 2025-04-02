@@ -1,5 +1,5 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.7.2" %}
+{% set version = "6.7.3" %}
 
 package:
   name: {{ name }}
@@ -8,26 +8,32 @@ package:
 source:
   - url: https://github.com/qt/qtwebengine/archive/refs/tags/v{{ version }}.tar.gz
   # TODO: Use official releases page again once moving to a LTS.
-  #  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: cd89db1a53626da4c71271fe5edaaf4de176d39af448151633368f1aee22a687
+#  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
+    sha256: 551bb9bc8734b13f1bed8888917d930008f3976ca12171a25fffbc2964eacce4
     folder: {{ name }}
+    patches:
+      - patches/0003-allow-building-with-non-apple-clang-version.patch
+      - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
+
+  # TODO: Remove this and move all these patches back to official release source once moving to a LTS.
+  # Hash came from https://github.com/qt/qtwebengine/tree/v{{ version }}/src 3rdparty submodule.
+  - url: https://github.com/qt/qtwebengine-chromium/archive/45bdfbd7721749beea9abd18467465e4c9026559.tar.gz
+    sha256: 275135326fb3036f54ec6b7c8b93b951faf68d90cb9ddea361c96d1215721b42
+    folder: {{ name }}/src/3rdparty
     patches:
       - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
       - patches/0002-chromium-force-bundled-libdrm-for-linux.patch
-      - patches/0003-allow-building-with-non-apple-clang-version.patch
       - patches/0004-chromium-force-settings-to-build-without-xcode.patch
       - patches/0005-chromium-avoid-using-macos-12-13-14-symbols.patch
       - patches/0006-chromium-added-missing-headers.patch
       - patches/0007-chromium-disable-glib-usage-for-linux-aarch64.patch
       - patches/0008-chromium-fix-readelf-path.patch
-      - patches/0009-chromium-work-around-msvc-17.10-bug.patch
       # https://github.com/carsten-grimm-at-ipolog/vcpkg/blob/master/ports/qtwebengine/add-include-string.patch
       - patches/0010-gn-add-include-string.patch                  # [win]
       - patches/0011-use-binary-input-for-gperf-on-Windows.patch  # [win]
-      - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
+      - patches/0013-Disable-ScreenCaptureKit-on-OSX.patch        # [osx]
 
   - folder: kernel_headers  # [linux]
-    # Note: these URL can be deleted by the CentOS in a few months
     url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-573.el9.x86_64.rpm    # [linux and x86_64]
     url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-5.14.0-573.el9.aarch64.rpm  # [linux and aarch64]
     sha256: 5387dac519fac54cb0afb5e55997d5c535c4c9bca82cad26d8e164a6a613acf6  # [linux and x86_64]
