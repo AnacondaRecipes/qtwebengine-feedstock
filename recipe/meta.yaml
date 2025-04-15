@@ -1,34 +1,43 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.7.2" %}
+{% set version = "6.7.3" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: c7755875594d8be382b07bf3634d44fd77012805794d8b588891709a6405ffd1
+  - url: https://github.com/qt/qtwebengine/archive/refs/tags/v{{ version }}.tar.gz
+  # TODO: Use official releases page again once moving to a LTS.
+#  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
+    sha256: 551bb9bc8734b13f1bed8888917d930008f3976ca12171a25fffbc2964eacce4
     folder: {{ name }}
+    patches:
+      - patches/0003-allow-building-with-non-apple-clang-version.patch
+      - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
+
+  # TODO: Remove this and move all these patches back to official release source once moving to a LTS.
+  # Hash came from https://github.com/qt/qtwebengine/tree/v{{ version }}/src 3rdparty submodule.
+  - url: https://github.com/qt/qtwebengine-chromium/archive/45bdfbd7721749beea9abd18467465e4c9026559.tar.gz
+    sha256: 275135326fb3036f54ec6b7c8b93b951faf68d90cb9ddea361c96d1215721b42
+    folder: {{ name }}/src/3rdparty
     patches:
       - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
       - patches/0002-chromium-force-bundled-libdrm-for-linux.patch
-      - patches/0003-allow-building-with-non-apple-clang-version.patch
       - patches/0004-chromium-force-settings-to-build-without-xcode.patch
       - patches/0005-chromium-avoid-using-macos-12-13-14-symbols.patch
       - patches/0006-chromium-added-missing-headers.patch
       - patches/0007-chromium-disable-glib-usage-for-linux-aarch64.patch
       - patches/0008-chromium-fix-readelf-path.patch
-      - patches/0009-chromium-work-around-msvc-17.10-bug.patch
       # https://github.com/carsten-grimm-at-ipolog/vcpkg/blob/master/ports/qtwebengine/add-include-string.patch
       - patches/0010-gn-add-include-string.patch                  # [win]
       - patches/0011-use-binary-input-for-gperf-on-Windows.patch  # [win]
-      - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
+      - patches/0013-Disable-ScreenCaptureKit-on-OSX.patch        # [osx]
 
   - folder: kernel_headers  # [linux]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-547.el9.x86_64.rpm    # [linux and x86_64]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-5.14.0-547.el9.aarch64.rpm  # [linux and aarch64]
-    sha256: def18a899bfe85c17e9bc1a5512930f100ffc18a7eb233a8d1017b14fd7b547c  # [linux and x86_64]
-    sha256: f254eec5d3166d02e08ad4cc36f2bc5bf75a952fe06f9a2df1721783ee6f48b1  # [linux and aarch64]
+    url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-573.el9.x86_64.rpm    # [linux and x86_64]
+    url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-5.14.0-573.el9.aarch64.rpm  # [linux and aarch64]
+    sha256: 5387dac519fac54cb0afb5e55997d5c535c4c9bca82cad26d8e164a6a613acf6  # [linux and x86_64]
+    sha256: 4a7a5d00168e9c6949e9b3e3c4aa684aa9e8e2ffedf66e1c59b6d3f3986b862d  # [linux and aarch64]
 
 build:
   number: 0
@@ -110,7 +119,7 @@ requirements:
     # Qt6 requires at least 2.10.92 for access to FCConfigGetSysRoot()
     # https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcconfiggetsysroot.html
     - fontconfig {{ fontconfig }}  # [linux]
-    - freetype 2.12.1              # [linux]
+    - freetype 2.13.3              # [linux]
     - gtk2 2.24.33                 # [linux]
     - lcms2 2.16                   # [linux]
     # Must build with same major version of protoc as Chromium (currently 3.20.3, so needs to be <4) or else generated
@@ -121,7 +130,7 @@ requirements:
     - libxkbcommon 1.0.1           # [linux]
     - nspr 4.35                    # [linux]
     - nss 3.89.1                   # [linux]
-    - openjpeg {{ openjpeg }}      # [linux]
+    - openjpeg 2.5.2               # [linux]
     - dbus {{ dbus }}              # [linux]
     - pcre 8                       # [linux and aarch64]
     - libwebp {{ libwebp }}        # [win]
@@ -188,3 +197,6 @@ about:
 extra:
   skip-lints:
     - has_run_test_and_commands
+    - invalid_url
+    - missing_source
+    - missing_hash
