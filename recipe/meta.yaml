@@ -59,39 +59,24 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ cdt('alsa-lib-devel') }}             # [linux]
-    - {{ cdt('cups-devel') }}                 # [linux]
-    - {{ cdt('gtkmm24-devel') }}              # [linux]
-    - {{ cdt('libdrm-devel') }}               # [linux]
-    - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
-    - {{ cdt('libice-devel') }}               # [linux]
-    - {{ cdt('libselinux-devel') }}           # [linux]
-    - {{ cdt('libsm-devel') }}                # [linux]
-    - {{ cdt('libx11-devel') }}               # [linux]
-    - {{ cdt('libxau-devel') }}               # [linux]
-    - {{ cdt('libxcomposite-devel') }}        # [linux]
-    - {{ cdt('libxcursor-devel') }}           # [linux]
-    - {{ cdt('libxdamage-devel') }}           # [linux]
-    - {{ cdt('libxext-devel') }}              # [linux]
-    - {{ cdt('libxfixes-devel') }}            # [linux]
-    - {{ cdt('libxi-devel') }}                # [linux]
-    - {{ cdt('libxkbfile-devel') }}           # [linux]
-    - {{ cdt('libxrandr-devel') }}            # [linux]
-    - {{ cdt('libxrender-devel') }}           # [linux]
-    - {{ cdt('libxscrnsaver-devel') }}        # [linux]
-    - {{ cdt('libxtst-devel') }}              # [linux]
-    - {{ cdt('libxxf86vm-devel') }}           # [linux]
-    - {{ cdt('mesa-libgbm-devel') }}          # [linux and aarch64]
-    - {{ cdt('mesa-libgl-devel') }}           # [linux]
-    - {{ cdt('mesa-libegl-devel') }}          # [linux]
-    - {{ cdt('mesa-dri-drivers') }}           # [linux]
-    - {{ cdt('pciutils-devel') }}             # [linux]
-    - {{ cdt('xcb-util-devel') }}             # [linux]
-    - {{ cdt('xcb-util-image-devel') }}       # [linux]
-    - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
-    - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
-    - {{ cdt('xcb-util-wm-devel') }}          # [linux]
-    - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
+    # TODO: map CDT alsa-lib-devel to new X11 package
+    # - { cdt('alsa-lib-devel') }
+    # TODO: map CDT cups-devel to new X11 package
+    # - { cdt('cups-devel') }
+    # TODO: map CDT gtkmm24-devel to new X11 package
+    # - { cdt('gtkmm24-devel') }
+    # TODO: map CDT libdrm-devel to new X11 package
+    # - { cdt('libdrm-devel') }
+    # TODO: map CDT libselinux-devel to new X11 package
+    # - { cdt('libselinux-devel') }
+    # TODO: map CDT libxkbfile-devel to new X11 package
+    # - { cdt('libxkbfile-devel') }
+    # TODO: map CDT mesa-libgbm-devel to new X11 package
+    # - { cdt('mesa-libgbm-devel') }
+    # TODO: map CDT mesa-libegl-devel to new X11 package
+    # - { cdt('mesa-libegl-devel') }
+    # TODO: map CDT pciutils-devel to new X11 package
+    # - { cdt('pciutils-devel') }
     - bison       # [linux]
     - flex        # [linux]
     - gperf       # [linux]
@@ -142,6 +127,36 @@ requirements:
     - minizip 4.0.3
     - poppler 24
 
+    - libgl-devel
+    - xorg-libice
+    - xorg-libsm
+    - xorg-libx11
+    - xorg-libxau
+    - xorg-libxcomposite
+    - xorg-libxcursor
+    - xorg-libxdamage
+    - xorg-libxext
+    - xorg-libxfixes
+    - xorg-libxi
+    - xorg-libxrandr
+    - xorg-libxrender
+    - xorg-libxscrnsaver
+    - xorg-libxtst
+    - xorg-libxxf86vm
+    - libgl-devel
+    - mesa-dri-drivers
+    - xcb-util
+    - xcb-util-image
+    - xcb-util-keysyms
+    - xcb-util-renderutil
+    - xcb-util-wm
+    - xorg-xproto
+    - libgl-devel
+    - xorg-libxdamage
+    - xorg-libxext
+    - xorg-libxfixes
+    - xorg-libxxf86vm
+    - libgl-devel
   run_constrained:
     - qt-main >={{ version }},<7
     - qt >={{ version }},<7
@@ -149,23 +164,28 @@ requirements:
 test:
   requires:
     - {{ compiler('cxx') }}
-    - {{ cdt('alsa-lib') }}             # [linux]
-    - {{ cdt('mesa-libgbm') }}          # [linux]
-    - {{ cdt('libglvnd-devel') }}       # [linux and aarch64]
-    - {{ cdt('libselinux') }}           # [linux]
-    - {{ cdt('libxau') }}               # [linux]
-    - {{ cdt('libxcomposite') }}        # [linux]
-    - {{ cdt('libxdamage') }}           # [linux]
-    - {{ cdt('libxext') }}              # [linux]
-    - {{ cdt('libxfixes') }}            # [linux]
-    - {{ cdt('libxkbfile') }}           # [linux]
-    - {{ cdt('libxi') }}                # [linux]
-    - {{ cdt('libxrandr') }}            # [linux]
-    - {{ cdt('libxrender') }}           # [linux]
-    - {{ cdt('libxtst') }}              # [linux]
-    - {{ cdt('libxxf86vm') }}           # [linux]
-    - {{ cdt('mesa-libgl-devel') }}     # [linux]
-    - {{ cdt('mesa-libegl-devel') }}    # [linux]
+    # TODO: map CDT alsa-lib to new X11 package
+    # - { cdt('alsa-lib') }
+    # TODO: map CDT mesa-libgbm to new X11 package
+    # - { cdt('mesa-libgbm') }
+    # TODO: map CDT libselinux to new X11 package
+    # - { cdt('libselinux') }
+    # TODO: map CDT libxau to new X11 package
+    # - { cdt('libxau') }
+    # TODO: map CDT libxcomposite to new X11 package
+    # - { cdt('libxcomposite') }
+    # TODO: map CDT libxkbfile to new X11 package
+    # - { cdt('libxkbfile') }
+    # TODO: map CDT libxi to new X11 package
+    # - { cdt('libxi') }
+    # TODO: map CDT libxrandr to new X11 package
+    # - { cdt('libxrandr') }
+    # TODO: map CDT libxrender to new X11 package
+    # - { cdt('libxrender') }
+    # TODO: map CDT libxtst to new X11 package
+    # - { cdt('libxtst') }
+    # TODO: map CDT mesa-libegl-devel to new X11 package
+    # - { cdt('mesa-libegl-devel') }
     - make                              # [unix]
   files:
     - test/main-qtwebengine.cpp
