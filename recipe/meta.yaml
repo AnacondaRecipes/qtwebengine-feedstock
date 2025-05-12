@@ -1,5 +1,8 @@
 {% set name = "qtwebengine" %}
 {% set version = "6.7.3" %}
+# Warning: kernel_headers_version changes dynamically; set a new version for every release manually
+{% set kernel_headers_version = "5.14.0-596" %}
+
 
 package:
   name: {{ name }}
@@ -7,7 +10,7 @@ package:
 
 source:
   - url: https://github.com/qt/qtwebengine/archive/refs/tags/v{{ version }}.tar.gz
-  # TODO: Use official releases page again once moving to a LTS.
+  # TODO: Use official releases page again once moving to a newer version.
 #  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
     sha256: 551bb9bc8734b13f1bed8888917d930008f3976ca12171a25fffbc2964eacce4
     folder: {{ name }}
@@ -15,13 +18,13 @@ source:
       - patches/0003-allow-building-with-non-apple-clang-version.patch
       - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
 
-  # TODO: Remove this and move all these patches back to official release source once moving to a LTS.
+  # TODO: Remove this and move all these patches back to official release source once moving to a newer version.
   # Hash came from https://github.com/qt/qtwebengine/tree/v{{ version }}/src 3rdparty submodule.
   - url: https://github.com/qt/qtwebengine-chromium/archive/45bdfbd7721749beea9abd18467465e4c9026559.tar.gz
     sha256: 275135326fb3036f54ec6b7c8b93b951faf68d90cb9ddea361c96d1215721b42
     folder: {{ name }}/src/3rdparty
     patches:
-      - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
+      - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch  # [linux]
       - patches/0002-chromium-force-bundled-libdrm-for-linux.patch
       - patches/0004-chromium-force-settings-to-build-without-xcode.patch
       - patches/0005-chromium-avoid-using-macos-12-13-14-symbols.patch
@@ -34,20 +37,26 @@ source:
       - patches/0013-Disable-ScreenCaptureKit-on-OSX.patch        # [osx]
 
   - folder: kernel_headers  # [linux]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-573.el9.x86_64.rpm    # [linux and x86_64]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-5.14.0-573.el9.aarch64.rpm  # [linux and aarch64]
-    sha256: 5387dac519fac54cb0afb5e55997d5c535c4c9bca82cad26d8e164a6a613acf6  # [linux and x86_64]
-    sha256: 4a7a5d00168e9c6949e9b3e3c4aa684aa9e8e2ffedf66e1c59b6d3f3986b862d  # [linux and aarch64]
+    url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-{{ kernel_headers_version }}.el9.x86_64.rpm    # [linux and x86_64]
+    url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-{{ kernel_headers_version }}.el9.aarch64.rpm  # [linux and aarch64]
+    sha256: f64cbb1fca29cc2918a203fa50acfd0cec6fd168f1bfe28f4c4407e89b4edfc8  # [linux and x86_64]
+    sha256: 11c4db77218f810174497d969274aadfb013fcd76c89bad12e3dd8175223123a  # [linux and aarch64]
 
 build:
-  number: 0
-  skip: True  # [s390x]
+  number: 1
   skip: True  # [osx and x86_64]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
   ignore_run_exports_from:
     # Vendored protobuf is bundled in the Chromium build so no need to require a conda package for it.
+    # Remove this once we upgrade to Qt 6.10. See also a workaround with headers in build.sh.
     - libprotobuf                                  # [linux]
+    # These packages are only needed at build time
+    - qttools                                      # [linux]
+    - libglx                                       # [linux]
+    - libglx-devel                                 # [linux]
+    # TODO: Remove this once zlib and minizip get unvendored.
+    - minizip                                      # [linux]
   missing_dso_whitelist:
     - "*/api-ms-win-core-realtime-l1-1-1.dll"      # [win]
     - "*/api-ms-win-core-winrt-string-l1-1-0.dll"  # [win]
@@ -57,49 +66,17 @@ build:
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ cdt('alsa-lib-devel') }}             # [linux]
-    - {{ cdt('cups-devel') }}                 # [linux]
-    - {{ cdt('gtkmm24-devel') }}              # [linux]
-    - {{ cdt('libdrm-devel') }}               # [linux]
-    - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
-    - {{ cdt('libice-devel') }}               # [linux]
-    - {{ cdt('libselinux-devel') }}           # [linux]
-    - {{ cdt('libsm-devel') }}                # [linux]
-    - {{ cdt('libx11-devel') }}               # [linux]
-    - {{ cdt('libxau-devel') }}               # [linux]
-    - {{ cdt('libxcomposite-devel') }}        # [linux]
-    - {{ cdt('libxcursor-devel') }}           # [linux]
-    - {{ cdt('libxdamage-devel') }}           # [linux]
-    - {{ cdt('libxext-devel') }}              # [linux]
-    - {{ cdt('libxfixes-devel') }}            # [linux]
-    - {{ cdt('libxi-devel') }}                # [linux]
-    - {{ cdt('libxkbfile-devel') }}           # [linux]
-    - {{ cdt('libxrandr-devel') }}            # [linux]
-    - {{ cdt('libxrender-devel') }}           # [linux]
-    - {{ cdt('libxscrnsaver-devel') }}        # [linux]
-    - {{ cdt('libxtst-devel') }}              # [linux]
-    - {{ cdt('libxxf86vm-devel') }}           # [linux]
-    - {{ cdt('mesa-libgbm-devel') }}          # [linux and aarch64]
-    - {{ cdt('mesa-libgl-devel') }}           # [linux]
-    - {{ cdt('mesa-libegl-devel') }}          # [linux]
-    - {{ cdt('mesa-dri-drivers') }}           # [linux]
-    - {{ cdt('pciutils-devel') }}             # [linux]
-    - {{ cdt('xcb-util-devel') }}             # [linux]
-    - {{ cdt('xcb-util-image-devel') }}       # [linux]
-    - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
-    - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
-    - {{ cdt('xcb-util-wm-devel') }}          # [linux]
-    - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
     - bison       # [linux]
     - flex        # [linux]
     - gperf       # [linux]
     - jom         # [win]
-    - m2-bison    # [win]
-    - m2-flex     # [win]
-    - m2-gperf    # [win]
-    - m2-patch    # [win]
+    - msys2-bison    # [win]
+    - msys2-flex     # [win]
+    - msys2-gperf    # [win]
+    - msys2-patch    # [win]
     - patch       # [unix]
     - pkg-config  # [unix]
     - libtool     # [unix]
@@ -110,38 +87,51 @@ requirements:
     - perl
 
   host:
-    - qtbase {{ version }}
+    - qtbase-devel {{ version }}
     - qtdeclarative {{ version }}
     - qtwebchannel {{ version }}
     # Qt tools Designer is required to compile designer plugin.
     - qttools {{ version }}
-    - expat {{ expat }}            # [linux]
+    - expat {{ expat }}                # [linux]
     # Qt6 requires at least 2.10.92 for access to FCConfigGetSysRoot()
     # https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcconfiggetsysroot.html
-    - fontconfig {{ fontconfig }}  # [linux]
-    - freetype 2.13.3              # [linux]
-    - gtk2 2.24.33                 # [linux]
-    - lcms2 2.16                   # [linux]
+    - fontconfig {{ fontconfig }}      # [linux]
+    - freetype {{ freetype }}          # [linux]
+    - gtk2 2.24.33                     # [linux]
+    - lcms2 {{ lcms2 }}                # [linux]
     # Must build with same major version of protoc as Chromium (currently 3.20.3, so needs to be <4) or else generated
     # messages error out on include. Ideally, we only provide the vendored protoc to build with but mysql keeps pulling
     # it into the host env so we need to pin it.
-    - libprotobuf 3.20.3           # [linux]
-    - libxcb 1.15                  # [linux]
-    - libxkbcommon 1.0.1           # [linux]
-    - nspr 4.35                    # [linux]
-    - nss 3.89.1                   # [linux]
-    - openjpeg 2.5.2               # [linux]
-    - dbus {{ dbus }}              # [linux]
-    - pcre 8                       # [linux and aarch64]
-    - libwebp {{ libwebp }}        # [win]
-    - libxml2 {{ libxml2 }}        # [win]
-    - libxslt {{ libxslt }}        # [win]
+    - libprotobuf 3.20.3               # [linux]
+    - nspr {{ nspr }}                  # [linux]
+    - nss {{ nss }}                    # [linux]
+    - openjpeg {{ openjpeg }}          # [linux]
+    - dbus {{ dbus }}                  # [linux]
+    - pcre {{ pcre }}                  # [linux and aarch64]
+    - libwebp {{ libwebp }}            # [win]
+    - libxml2 {{ libxml2 }}            # [win]
+    - libxslt {{ libxslt }}            # [win]
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
     - libtiff {{ libtiff }}
-    - minizip 4.0.3
+    # Both minizip and zlib have to be ON to use system minizip.
+    - minizip {{ minizip }}
+    - zlib {{ zlib }}
     - poppler 24
-
+    # ALSA audio library (needed for QT_FEATURE_webengine_system_alsa=ON)
+    - alsa-lib {{ alsa_lib }}          # [linux]
+    # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
+    - libcups 2.4                      # [linux]
+    # X11/XCB dependencies needed by QtWebEngine/Chromium
+    - libxkbcommon {{ libxkbcommon }}  # [linux]
+    - libxkbfile 1.1                   # [linux]
+    # Provides GL/glx.h
+    - libglx-devel {{ libglx }}        # [linux]
+    - libxcb {{ libxcb }}              # [linux]
+    - xorg-libx11 {{ xorg_libx11 }}    # [linux]
+    - xorg-libxext {{ xorg_libxext }}  # [linux]
+    - xorg-libxi {{ xorg_libxi }}      # [linux]
+    - mesalib 25                       # [linux]
   run_constrained:
     - qt-main >={{ version }},<7
     - qt >={{ version }},<7
@@ -149,38 +139,16 @@ requirements:
 test:
   requires:
     - {{ compiler('cxx') }}
-    - {{ cdt('alsa-lib') }}             # [linux]
-    - {{ cdt('mesa-libgbm') }}          # [linux]
-    - {{ cdt('libglvnd-devel') }}       # [linux and aarch64]
-    - {{ cdt('libselinux') }}           # [linux]
-    - {{ cdt('libxau') }}               # [linux]
-    - {{ cdt('libxcomposite') }}        # [linux]
-    - {{ cdt('libxdamage') }}           # [linux]
-    - {{ cdt('libxext') }}              # [linux]
-    - {{ cdt('libxfixes') }}            # [linux]
-    - {{ cdt('libxkbfile') }}           # [linux]
-    - {{ cdt('libxi') }}                # [linux]
-    - {{ cdt('libxrandr') }}            # [linux]
-    - {{ cdt('libxrender') }}           # [linux]
-    - {{ cdt('libxtst') }}              # [linux]
-    - {{ cdt('libxxf86vm') }}           # [linux]
-    - {{ cdt('mesa-libgl-devel') }}     # [linux]
-    - {{ cdt('mesa-libegl-devel') }}    # [linux]
     - make                              # [unix]
+    - pkg-config                        # [unix]
+    - qtbase-devel
   files:
     - test/main-qtwebengine.cpp
     - test/qml.qrc
     - test/qrc_qml.cpp
     - test/main.qml
     - test/qtwebengine.pro
-  commands:
-    {% for each_qt_lib in ["Pdf", "PdfQuick", "PdfWidgets", "WebEngineCore", "WebEngineQuick", "WebEngineWidgets"] %}
-    - test -d $PREFIX/include/qt6/Qt{{ each_qt_lib }}                           # [unix]
-    - test -f $PREFIX/lib/libQt6{{ each_qt_lib }}${SHLIB_EXT}                   # [unix]
-    - if not exist %PREFIX%\\Library\\include\\qt6\\Qt{{ each_qt_lib }} exit 1  # [win]
-    - if not exist %PREFIX%\\Library\\lib\\Qt6{{ each_qt_lib }}.lib exit 1      # [win]
-    - if not exist %PREFIX%\\Library\\bin\\Qt6{{ each_qt_lib }}.dll exit 1      # [win]
-    {% endfor %}
+  # The test commands are in run_test.sh and run_test.bat
 
 about:
   home: https://www.qt.io/

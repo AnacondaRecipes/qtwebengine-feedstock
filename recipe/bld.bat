@@ -51,6 +51,7 @@ cmake -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DQT_FEATURE_webengine_system_poppler=ON ^
     -DQT_FEATURE_webengine_system_snappy=OFF ^
     -DQT_FEATURE_webengine_system_zlib=OFF
+:: TODO: Turn on zlib so that minizip is unvendored.
 if errorlevel 1 exit 1
 
 cmake --build build --target install -j %CPU_COUNT%

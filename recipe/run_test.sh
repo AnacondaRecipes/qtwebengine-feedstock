@@ -2,13 +2,15 @@
 
 set -e
 
-if [[ $(uname -m) == "x86_64" ]]; then
-  echo "[WARN] Skipping smoke test!"
-else
-  cd test
-  ln -s ${GXX} g++
-  export PATH=$PREFIX/bin/xc-avoidance:${PWD}:${PATH}
-  # Only test that this builds
-  qmake6 qtwebengine.pro
-  make
-fi
+# Run smoke test on all Linux architectures
+pushd test
+
+# Ensure make can find a compiler.
+ln -s ${GXX} g++
+export PATH=$PREFIX/bin/xc-avoidance:${PWD}:${PATH}
+
+# Only test that this builds: -d for debug, -Wall for warnings, -Wparser for parser warnings
+qmake6 -Wall -Wparser qtwebengine.pro
+make
+
+popd
