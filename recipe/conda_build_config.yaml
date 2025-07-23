@@ -1,9 +1,14 @@
-# Need newer OSX SDK for proper AVFAudio/AVFAudio.h pathing.
-MACOSX_SDK_VERSION:                                          # [osx]
-  - '13.3'                                                   # [osx]
-CONDA_BUILD_SYSROOT:                                         # [osx]
-  - /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk  # [osx]
 c_compiler:    # [win]
   - vs2022     # [win]
 cxx_compiler:  # [win]
   - vs2022     # [win]
+# Need newer OSX SDK for proper AVFAudio/AVFAudio.h pathing.
+# Windows builds error out with newer VS2022 releases.
+c_stdlib_version:  # [not linux]
+  - 11.3           # [osx]
+  - 2022.12        # [win]
+
+# Have to leave this for now or else the overlinking checks fail when we revert back to the aggregate CBC and use the
+# 11.1 sysroot.
+CONDA_BUILD_SYSROOT:                                         # [osx]
+  - /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk  # [osx]

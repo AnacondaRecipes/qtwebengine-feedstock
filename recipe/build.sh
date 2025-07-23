@@ -5,10 +5,6 @@ set -ex
 if [[ "${target_platform}" == linux-* ]]; then
   CMAKE_ARGS="
     ${CMAKE_ARGS}
-    -DALSA_FOUND=1
-    -DALSA_INCLUDE_DIRS=${BUILD_PREFIX}/${HOST}/sysroot/usr/include/alsa
-    -DALSA_LDFLAGS=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64;-lasound
-    -DALSA_LIBRARY_DIRS=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64
     -DQT_FEATURE_webengine_ozone_x11=ON
     -DQT_FEATURE_webengine_system_alsa=ON
     -DQT_FEATURE_webengine_system_minizip=ON
@@ -16,9 +12,11 @@ if [[ "${target_platform}" == linux-* ]]; then
 
   if [[ "${target_platform}" == linux-aarch64 ]]; then
     # Somehow a path for /usr/include/freetype2 is still making it into the CMake PkgConfig::FREETYPE IMPORT target.
+    #
     # Webenginedriver is just used for tests and does not link against zlib correctly on linux-aarch64.
+    #
     # Chromium vendors minigbm, a discontinued Intel project, which uses compiler features not compatible with our
-    # aarch64 compiler.
+    # aarch64 gcc compiler.
     CMAKE_ARGS="
       ${CMAKE_ARGS}
       -DFREETYPE_FOUND=1
@@ -26,8 +24,8 @@ if [[ "${target_platform}" == linux-* ]]; then
       -DFREETYPE_LDFLAGS=${PREFIX}/usr/lib;-lfreetype
       -DFREETYPE_LIBRARY_DIRS=${PREFIX}/usr/lib
       -DQT_FEATURE_webengine_system_freetype=OFF
-      -DQT_FEATURE_webenginedriver=OFF
       -DQT_FEATURE_webengine_system_gbm=ON
+      -DQT_FEATURE_webenginedriver=OFF
     "
   else
     CMAKE_ARGS="
@@ -40,19 +38,37 @@ if [[ "${target_platform}" == linux-* ]]; then
   # Extract and use newer Linux kernel headers as a workaround to updating the linux-sysroot-feedstock.
   cp -r kernel_headers/* ${BUILD_PREFIX}/${HOST}/sysroot/usr/
 
-  # Hack to help the gn build tool find alsa during build. We can't add ${BUILD_PREFIX}/${HOST}/sysroot/lib64 to the
-  # LD_LIBRARY_PATH below because it causes segfaults in many system applications.
-  ln -s ../../lib64/libasound.so.2 ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libasound.so.2
-
-  # Hack to help the gn build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
-  # LIBRARY_PATH because the v8_context_snapshot_generator tool needs to run during the build and requires libs from
-  # our CDT packages.
-  export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
+  # Hack to help the gn build tool find xorg headers during build. LD_LIBRARY_PATH is used rather than
+  # LIBRARY_PATH because the `v8_context_snapshot_generator` tool needs to run during the build and requires libs
+  # from our xorg packages.
+  export LD_LIBRARY_PATH="${PREFIX}/lib:${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${LD_LIBRARY_PATH}"
   export PKG_CONFIG_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/pkgconfig:${BUILD_PREFIX}/${HOST}/sysroot/usr/share/pkgconfig:${PKG_CONFIG_PATH}"
 
-  # hack to help the gn build tool find the xcb headers. we can't add ${PREFIX}/include
-  # to the include paths because bundled headers will conflict with the host headers.
-  cp -r "${PREFIX}/include/xcb" "${BUILD_PREFIX}/${HOST}/sysroot/usr/include/"
+  # IMPORTANT: Chromium didn't add flags to unvendor protobuf until very recently and not even the latest Qt 6.9.1
+  # release has them included yet. We can't fix it until we upgrade Qt versions to maybe 6.10. That is the reason why
+  # we're moving these headers around and that we should be able to stop as soon as Chromium provides a build option
+  # to use_system_protobuf=1.
+
+  # Copy required headers from conda packages to sysroot for Chromium/ANGLE build
+  # We can't add ${PREFIX}/include to the include paths because bundled protobuf headers 
+  # will conflict with the conda protobuf headers, so we copy specific headers to sysroot
+  echo "Copying headers to sysroot for Chromium build..."
+  
+  # List of header directories to copy from ${PREFIX}/include to sysroot
+  # These correspond to the X11/XCB/GL/EGL/ALSA/CUPS packages in host dependencies
+  # KHR headers come from mesalib
+  HEADER_DIRS=("xcb" "X11" "GL" "EGL" "alsa" "cups" "KHR")
+  
+  for header_dir in "${HEADER_DIRS[@]}"; do
+    if [[ -d "${PREFIX}/include/${header_dir}" ]]; then
+      cp -r "${PREFIX}/include/${header_dir}" "${BUILD_PREFIX}/${HOST}/sysroot/usr/include/"
+      echo "  ✓ Copied ${header_dir} headers to sysroot"
+    else
+      echo "  ⚠ Warning: ${header_dir} headers not found in ${PREFIX}/include/${header_dir}"
+    fi
+  done
+  
+  echo "  ✓ Header copying complete - X11, XCB, GL, EGL, alsa, cups, and KHR headers available for Chromium build"
 else
   CMAKE_ARGS="
     ${CMAKE_ARGS}
@@ -110,6 +126,7 @@ cmake -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS} \
   -DQT_FEATURE_webengine_system_poppler=ON \
   -DQT_FEATURE_webengine_system_snappy=OFF \
   -DQT_FEATURE_webengine_system_zlib=OFF
+# TODO: Turn on zlib so that minizip is unvendored.
 
 cmake --build build --target install -j${CPU_COUNT}
 
