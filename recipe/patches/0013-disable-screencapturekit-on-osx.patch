@@ -11,15 +11,14 @@ diff --git a/src/3rdparty/chromium/media/media_options.gni b/src/3rdparty/chromi
 index e1110f70170d..038cc5cacf63 100644
 --- a/src/3rdparty/chromium/media/media_options.gni
 +++ b/src/3rdparty/chromium/media/media_options.gni
-@@ -125,7 +125,7 @@ declare_args() {
- 
+@@ -132,7 +132,7 @@ declare_args() {
+
    # Enable the use of ScreenCaptureKit framework on macOS. A stable ScreenCaptureKit is available
    # from macOS 13.2. Enabled by default for all build.
 -  use_sck = true
 +  use_sck = false
  }
- 
- # Use another declare_args() to allow dependence on args defined above.
--- 
-2.47.2
 
+ # Use another declare_args() to allow dependence on args defined above.
+--
+2.47.2

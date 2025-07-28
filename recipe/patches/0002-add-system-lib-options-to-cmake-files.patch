@@ -1,0 +1,106 @@
+From 22f44bda95fb755a1575beb0615e076eaa70fe57 Mon Sep 17 00:00:00 2001
+From: Brian Wing <bwing@anaconda.com>
+Date: Wed, 13 Aug 2025 13:05:36 -0400
+Subject: [PATCH] Add system lib options to CMake files
+
+---
+ src/core/CMakeLists.txt | 41 ++++++++++++++++++++++++++++++++++++-----
+ src/pdf/CMakeLists.txt  | 11 +++++++++++
+ 2 files changed, 47 insertions(+), 5 deletion(-)
+
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index d5e9b71..d9cdddc 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -395,10 +395,6 @@ foreach(arch ${archs})
+             CONDITION QT_FEATURE_webengine_webrtc
+         )
+         extend_gn_list(gnArgArg
+-            ARGS enable_screen_capture
+-            CONDITION QT_FEATURE_webengine_webrtc
+-        )
+-        extend_gn_list(gnArgArg
+             ARGS enable_hangout_services_extension
+             CONDITION QT_FEATURE_webengine_webrtc AND QT_FEATURE_webengine_extensions
+         )
+@@ -456,7 +452,7 @@ foreach(arch ${archs})
+                 ozone_extra_path="${CMAKE_CURRENT_LIST_DIR}/ozone/ozone_extra.gni"
+             )
+             set(systemLibs libjpeg libpng freetype harfbuzz libevent libwebp libxml
+-                opus snappy icu ffmpeg re2 lcms2 libopenjpeg2 libvpx
++                opus snappy icu ffmpeg re2 lcms2 libopenjpeg2 libxslt libvpx
+             )
+             foreach(slib ${systemLibs})
+                 extend_gn_list(gnArgArg
+@@ -571,12 +567,47 @@ foreach(arch ${archs})
+                 endif()
+             endif()
+             unset(cpu)
++        else()
++            set(systemLibs libjpeg libpng freetype harfbuzz libevent libwebp libxml opus snappy icu ffmpeg re2
++                libopenjpeg2 libxslt libvpx)
++            foreach(slib ${systemLibs})
++                extend_gn_list(gnArgArg
++                    ARGS use_system_${slib}
++                    CONDITION QT_FEATURE_webengine_system_${slib}
++                )
++            endforeach()
++            extend_gn_list(gnArgArg
++                    ARGS use_system_zlib use_system_minizip
++                    CONDITION QT_FEATURE_webengine_system_zlib AND QT_FEATURE_webengine_system_minizip
++            )
++            extend_gn_list(gnArgArg
++                ARGS pdfium_use_system_libpng
++                CONDITION QT_FEATURE_webengine_system_libpng
++            )
++            extend_gn_list(gnArgArg
++                ARGS pdfium_use_system_libtiff
++                CONDITION QT_FEATURE_webengine_system_libtiff
++            )
++            extend_gn_list(gnArgArg
++                ARGS pdfium_use_system_zlib
++                CONDITION QT_FEATURE_webengine_system_zlib
++            )
++            extend_gn_list(gnArgArg
++                ARGS rtc_build_ssl libsrtp_build_boringssl
++                CONDITION NOT QT_FEATURE_webengine_system_ssl
++            )
+         endif()
+
+         if(MACOS)
+             list(APPEND gnArgArg
+                 use_external_popup_menu=false
+                 skia_use_metal=false
++                enable_screen_capture=true
++            )
++        else()
++            extend_gn_list(gnArgArg
++                ARGS enable_screen_capture
++                CONDITION QT_FEATURE_webengine_webrtc
+             )
+         endif()
+ 
+diff --git a/src/pdf/CMakeLists.txt b/src/pdf/CMakeLists.txt
+index 30369b9..5a0fb50 100644
+--- a/src/pdf/CMakeLists.txt
++++ b/src/pdf/CMakeLists.txt
+@@ -238,6 +238,17 @@ foreach(arch ${archs})
+             ARGS use_qt_freetype
+             CONDITION QT_FEATURE_webengine_qt_freetype
+         )
++        set(systemLibs libjpeg harfbuzz freetype)
++        foreach(slib ${systemLibs})
++            extend_gn_list(gnArgArg
++                ARGS use_system_${slib}
++                CONDITION QT_FEATURE_webengine_system_${slib}
++            )
++        endforeach()
++        extend_gn_list(gnArgArg
++            ARGS pdf_bundle_freetype
++            CONDITION NOT QT_FEATURE_webengine_system_freetype
++        )
+
+         add_gn_command(
+             CMAKE_TARGET Pdf
+-- 
+2.49.0

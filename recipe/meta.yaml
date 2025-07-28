@@ -1,7 +1,5 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.7.3" %}
-# Warning: kernel_headers_version changes dynamically; set a new version for every release manually
-{% set kernel_headers_version = "5.14.0-596" %}
+{% set version = "6.9.1" %}
 
 
 package:
@@ -9,54 +7,33 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://github.com/qt/qtwebengine/archive/refs/tags/v{{ version }}.tar.gz
-  # TODO: Use official releases page again once moving to a newer version.
-#  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: 551bb9bc8734b13f1bed8888917d930008f3976ca12171a25fffbc2964eacce4
+  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
+    sha256: 787dfde22b348f6d620f2207ed7e32ad0a5389373182614272de28ff3f91c26c
     folder: {{ name }}
     patches:
-      - patches/0003-allow-building-with-non-apple-clang-version.patch
-      - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
-
-  # TODO: Remove this and move all these patches back to official release source once moving to a newer version.
-  # Hash came from https://github.com/qt/qtwebengine/tree/v{{ version }}/src 3rdparty submodule.
-  - url: https://github.com/qt/qtwebengine-chromium/archive/45bdfbd7721749beea9abd18467465e4c9026559.tar.gz
-    sha256: 275135326fb3036f54ec6b7c8b93b951faf68d90cb9ddea361c96d1215721b42
-    folder: {{ name }}/src/3rdparty
-    patches:
-      - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch  # [linux]
-      - patches/0002-chromium-force-bundled-libdrm-for-linux.patch
-      - patches/0004-chromium-force-settings-to-build-without-xcode.patch
-      - patches/0005-chromium-avoid-using-macos-12-13-14-symbols.patch
-      - patches/0006-chromium-added-missing-headers.patch
-      - patches/0007-chromium-disable-glib-usage-for-linux-aarch64.patch
-      - patches/0008-chromium-fix-readelf-path.patch
-      # https://github.com/carsten-grimm-at-ipolog/vcpkg/blob/master/ports/qtwebengine/add-include-string.patch
-      - patches/0010-gn-add-include-string.patch                  # [win]
-      - patches/0011-use-binary-input-for-gperf-on-Windows.patch  # [win]
-      - patches/0013-Disable-ScreenCaptureKit-on-OSX.patch        # [osx]
-
-  - folder: kernel_headers  # [linux]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/kernel-headers-{{ kernel_headers_version }}.el9.x86_64.rpm    # [linux and x86_64]
-    url: https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/Packages/kernel-headers-{{ kernel_headers_version }}.el9.aarch64.rpm  # [linux and aarch64]
-    sha256: f64cbb1fca29cc2918a203fa50acfd0cec6fd168f1bfe28f4c4407e89b4edfc8  # [linux and x86_64]
-    sha256: 11c4db77218f810174497d969274aadfb013fcd76c89bad12e3dd8175223123a  # [linux and aarch64]
+      - patches/0001-gn-add-conda-paths.patch
+      - patches/0002-add-system-lib-options-to-cmake-files.patch
+      - patches/0003-allow-building-with-non-apple-clang-version.patch     # [osx]
+      - patches/0004-chromium-force-settings-to-build-without-xcode.patch  # [osx]
+      - patches/0005-set-rpath-on-generators-on-osx.patch                  # [osx]
+      - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
+      - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
+      - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
+#      - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
 
 build:
-  number: 1
-  skip: True  # [osx and x86_64]
+  number: 0
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
   ignore_run_exports_from:
     # Vendored protobuf is bundled in the Chromium build so no need to require a conda package for it.
-    # Remove this once we upgrade to Qt 6.10. See also a workaround with headers in build.sh.
+    # Remove this once we upgrade to Qt 6.10.
     - libprotobuf                                  # [linux]
     # These packages are only needed at build time
-    - qttools                                      # [linux]
-    - libglx                                       # [linux]
+    - qttools
+    - qtwebsockets
     - libglx-devel                                 # [linux]
-    # TODO: Remove this once zlib and minizip get unvendored.
-    - minizip                                      # [linux]
+    - glib
   missing_dso_whitelist:
     - "*/api-ms-win-core-realtime-l1-1-1.dll"      # [win]
     - "*/api-ms-win-core-winrt-string-l1-1-0.dll"  # [win]
@@ -69,75 +46,91 @@ requirements:
     - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - bison       # [linux]
-    - flex        # [linux]
-    - gperf       # [linux]
-    - jom         # [win]
+    - bison          # [linux]
+    - flex           # [linux]
+    - gperf          # [linux]
+    - jom            # [win]
     - msys2-bison    # [win]
     - msys2-flex     # [win]
     - msys2-gperf    # [win]
-    - msys2-patch    # [win]
-    - patch       # [unix]
-    - pkg-config  # [unix]
-    - libtool     # [unix]
+    - pkg-config     # [unix]
+    - libtool        # [unix]
     - cmake
     - html5lib
     - ninja
     - nodejs
     - perl
-
   host:
+    ### Qt Deps ###
     - qtbase-devel {{ version }}
     - qtdeclarative {{ version }}
     - qtwebchannel {{ version }}
+    - qtwebsockets {{ version }}
     # Qt tools Designer is required to compile designer plugin.
     - qttools {{ version }}
-    - expat {{ expat }}                # [linux]
+
+    ### Linux Deps ###
+    # ALSA audio library (needed for QT_FEATURE_webengine_system_alsa=ON)
+    - alsa-lib {{ alsa_lib }}                      # [linux]
+    - dbus {{ dbus }}                              # [linux]
+    - expat {{ expat }}                            # [linux]
     # Qt6 requires at least 2.10.92 for access to FCConfigGetSysRoot()
     # https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcconfiggetsysroot.html
-    - fontconfig {{ fontconfig }}      # [linux]
-    - freetype {{ freetype }}          # [linux]
-    - gtk2 2.24.33                     # [linux]
-    - lcms2 {{ lcms2 }}                # [linux]
+    - fontconfig {{ fontconfig }}                  # [linux]
+    - gtk2 2.24.33                                 # [linux]
+    - lcms2 {{ lcms2 }}                            # [linux]
+    # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
+    - libcups 2.4                                  # [linux]
+    - libdrm {{ libdrm }}                          # [linux]
+    - libgl-devel {{ libgl }}                      # [linux]
+    - libglx-devel {{ libglx }}                    # [linux]
     # Must build with same major version of protoc as Chromium (currently 3.20.3, so needs to be <4) or else generated
     # messages error out on include. Ideally, we only provide the vendored protoc to build with but mysql keeps pulling
     # it into the host env so we need to pin it.
-    - libprotobuf 3.20.3               # [linux]
-    - nspr {{ nspr }}                  # [linux]
-    - nss {{ nss }}                    # [linux]
-    - openjpeg {{ openjpeg }}          # [linux]
-    - dbus {{ dbus }}                  # [linux]
-    - pcre {{ pcre }}                  # [linux and aarch64]
-    - libwebp {{ libwebp }}            # [win]
-    - libxml2 {{ libxml2 }}            # [win]
-    - libxslt {{ libxslt }}            # [win]
+    - libprotobuf 3.20.3                           # [linux]
+    # X11/XCB dependencies needed by QtWebEngine/Chromium
+    - libxcb {{ libxcb }}                          # [linux]
+    - libxkbcommon {{ libxkbcommon }}              # [linux]
+    - libxkbfile {{ libxkbfile }}                  # [linux]
+    # mesalib provides libgbm.
+    - mesalib {{ mesalib }}                        # [linux]
+    - nspr {{ nspr }}                              # [linux]
+    - nss {{ nss }}                                # [linux]
+    - xorg-libx11 {{ xorg_libx11 }}                # [linux]
+    - xorg-libxcomposite {{ xorg_libxcomposite }}  # [linux]
+    - xorg-libxdamage {{ xorg_libxdamage }}        # [linux]
+    - xorg-libxext {{ xorg_libxext }}              # [linux]
+    - xorg-libxfixes {{ xorg_libxfixes }}          # [linux]
+    - xorg-libxrandr {{ xorg_libxrandr }}          # [linux]
+    - xorg-libxtst {{ xorg_libxtst }}              # [linux]
+
+    ### Other Deps ###
+    - freetype {{ freetype }}            # [unix]
+    - glib {{ glib }}
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
+    - harfbuzz {{ harfbuzz }}
+    - lcms2 {{ lcms2 }}
+    - libevent {{ libevent }}
     - libtiff {{ libtiff }}
-    # Both minizip and zlib have to be ON to use system minizip.
-    - minizip {{ minizip }}
-    - zlib {{ zlib }}
-    - poppler 24
-    # ALSA audio library (needed for QT_FEATURE_webengine_system_alsa=ON)
-    - alsa-lib {{ alsa_lib }}          # [linux]
-    # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
-    - libcups 2.4                      # [linux]
-    # X11/XCB dependencies needed by QtWebEngine/Chromium
-    - libxkbcommon {{ libxkbcommon }}  # [linux]
-    - libxkbfile 1.1                   # [linux]
-    # Provides GL/glx.h
-    - libglx-devel {{ libglx }}        # [linux]
-    - libxcb {{ libxcb }}              # [linux]
-    - xorg-libx11 {{ xorg_libx11 }}    # [linux]
-    - xorg-libxext {{ xorg_libxext }}  # [linux]
-    - xorg-libxi {{ xorg_libxi }}      # [linux]
-    - mesalib 25                       # [linux]
+    - libopus {{ libopus }}              # [unix]
+    - libvpx {{ libvpx }}                # [unix]
+    - libvulkan-headers {{ libvulkan }}  # [not osx]
+    - libvulkan-loader {{ libvulkan }}   # [not osx]
+    - libwebp-base {{ libwebp_base }}
+    - libxml2 {{ libxml2 }}
+    - libxslt {{ libxslt }}
+    # jpeg for QtWebEngine, openjpeg for QtPdf.
+    - openjpeg {{ openjpeg }}
+    - re2 {{ re2 }}
+    - snappy {{ snappy }}
   run_constrained:
     - qt-main >={{ version }},<7
     - qt >={{ version }},<7
 
 test:
   requires:
+    - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
     - make                              # [unix]
     - pkg-config                        # [unix]
