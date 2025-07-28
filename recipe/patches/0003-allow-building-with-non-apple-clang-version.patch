@@ -11,29 +11,29 @@ with our clang.
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/configure.cmake b/configure.cmake
-index 79412cff8..3cbc96cf4 100644
+index 86c1202..9d5b70a 100644
 --- a/configure.cmake
 +++ b/configure.cmake
-@@ -580,7 +580,7 @@ add_check_for_support(
-    CONDITION MSVC OR
-        (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
-        (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
--       (MACOS AND CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-+       (MACOS AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    MESSAGE
-        "${CMAKE_CXX_COMPILER_ID} compiler is not supported."
+@@ -460,7 +460,7 @@ qt_webengine_configure_check("compiler"
+     CONDITION MSVC OR
+         (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+         (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+-        (MACOS AND CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
++        (MACOS AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+     MESSAGE
+         "${CMAKE_CXX_COMPILER_ID} compiler is not supported."
  )
-@@ -590,7 +590,7 @@ add_check_for_support(
-    CONDITION MSVC OR
-        (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
-        (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
--       (APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
-+       (APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
-        (ANDROID AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
-        (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
-        (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+@@ -469,7 +469,7 @@ qt_webengine_configure_check("compiler"
+     CONDITION MSVC OR
+         (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+         (LINUX AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+-        (APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
++        (APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+         (ANDROID AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+         (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+         (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 diff --git a/src/gn/CMakeLists.txt b/src/gn/CMakeLists.txt
-index 0fe3e4e05..78c291b37 100644
+index 0920236..7f76067 100644
 --- a/src/gn/CMakeLists.txt
 +++ b/src/gn/CMakeLists.txt
 @@ -49,7 +49,7 @@ elseif(MSVC)

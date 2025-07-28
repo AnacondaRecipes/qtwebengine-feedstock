@@ -8,14 +8,13 @@ Subject: [PATCH] Add gn args for libxslt and libwebp
  1 file changed, 8 insertions(+)
 
 diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
-index e7432d0c7..35b6aef66 100644
+index d5e9b71..2b30432 100644
 --- a/src/core/CMakeLists.txt
 +++ b/src/core/CMakeLists.txt
-@@ -513,6 +513,14 @@ foreach(arch ${archs})
-                 ARGS use_vaapi_x11
-                 CONDITION QT_FEATURE_webengine_ozone_x11 AND QT_FEATURE_webengine_vaapi
+@@ -515,6 +515,14 @@ foreach(arch ${archs})
+                 CONDITION QT_FEATURE_webengine_vaapi
              )
-+            extend_gn_list(gnArgArg
+             extend_gn_list(gnArgArg
 +                    ARGS use_system_libxslt
 +                    CONDITION QT_FEATURE_webengine_system_libxslt
 +            )
@@ -23,8 +22,9 @@ index e7432d0c7..35b6aef66 100644
 +                    ARGS use_system_libwebp
 +                    CONDITION QT_FEATURE_webengine_system_libwebp
 +            )
- 
-             if(QT_FEATURE_webengine_kerberos)
-                 list(APPEND gnArgArg
++            extend_gn_list(gnArgArg
+                 ARGS ozone_platform_x11 use_xkbcommon
+                 CONDITION QT_FEATURE_webengine_ozone_x11
+             )
 -- 
 2.45.2

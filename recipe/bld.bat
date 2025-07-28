@@ -2,8 +2,8 @@
 set "PATH=%SRC_DIR%\build\lib\qt6\bin;%PATH%"
 
 :: QT_FEATURE_webengine_system_icu has to be OFF or else icudtl.dat doesn't get installed
-:: https://github.com/qt/qtwebengine/blob/6.7.2/src/core/api/CMakeLists.txt#L171
-cmake -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
+:: https://github.com/qt/qtwebengine/blob/6.9.1/src/core/api/CMakeLists.txt#L186
+cmake --log-level STATUS -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^
     -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^
@@ -16,7 +16,6 @@ cmake -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DINSTALL_INCLUDEDIR=include/qt6 ^
     -DINSTALL_MKSPECSDIR=lib/qt6/mkspecs ^
     -DINSTALL_EXAMPLESDIR=share/doc/qt6/examples ^
-    -DINSTALL_DATADIR=share/qt6 ^
     -DQT_FEATURE_qtpdf_build=ON ^
     -DQT_FEATURE_qtpdf_quick_build=ON ^
     -DQT_FEATURE_qtpdf_widgets_build=ON ^
@@ -33,15 +32,15 @@ cmake -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DQT_FEATURE_webengine_qt_zlib=OFF ^
     -DQT_FEATURE_webengine_system_alsa=ON ^
     -DQT_FEATURE_webengine_system_ffmpeg=OFF ^
-    -DQT_FEATURE_webengine_system_freetype=OFF ^
-    -DQT_FEATURE_webengine_system_gbm=OFF ^
-    -DQT_FEATURE_webengine_system_glib=OFF ^
-    -DQT_FEATURE_webengine_system_harfbuzz=OFF ^
+    -DQT_FEATURE_webengine_system_freetype=ON ^
+    -DQT_FEATURE_webengine_system_gbm=ON ^
+    -DQT_FEATURE_webengine_system_glib=ON ^
+    -DQT_FEATURE_webengine_system_harfbuzz=ON ^
     -DQT_FEATURE_webengine_system_icu=OFF ^
     -DQT_FEATURE_webengine_system_libevent=OFF ^
-    -DQT_FEATURE_webengine_system_libjpeg=OFF ^
+    -DQT_FEATURE_webengine_system_libjpeg=ON ^
     -DQT_FEATURE_webengine_system_libpci=OFF ^
-    -DQT_FEATURE_webengine_system_libpng=OFF ^
+    -DQT_FEATURE_webengine_system_libpng=ON ^
     -DQT_FEATURE_webengine_system_libtiff=ON ^
     -DQT_FEATURE_webengine_system_libwebp=ON ^
     -DQT_FEATURE_webengine_system_libxml=ON ^
@@ -50,8 +49,8 @@ cmake -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DQT_FEATURE_webengine_system_opus=OFF ^
     -DQT_FEATURE_webengine_system_poppler=ON ^
     -DQT_FEATURE_webengine_system_snappy=OFF ^
-    -DQT_FEATURE_webengine_system_zlib=OFF
-:: TODO: Turn on zlib so that minizip is unvendored.
+    -DQT_FEATURE_webengine_system_zlib=ON
+
 if errorlevel 1 exit 1
 
 cmake --build build --target install -j %CPU_COUNT%

@@ -1,14 +1,28 @@
+# https://doc.qt.io/qt-6/macos.html
+c_stdlib_version:  # [not linux]
+  - 12.0           # [osx]
+  - 2022.12        # [win]
+OSX_SDK_VER:
+  - 14.5
+
+# https://doc.qt.io/qt-6/windows.html
 c_compiler:    # [win]
   - vs2022     # [win]
 cxx_compiler:  # [win]
   - vs2022     # [win]
-# Need newer OSX SDK for proper AVFAudio/AVFAudio.h pathing.
-# Windows builds error out with newer VS2022 releases.
-c_stdlib_version:  # [not linux]
-  - 11.3           # [osx]
-  - 2022.12        # [win]
+
+# XCode 15.0 came with SDK 14.0 and clang 15
+# https://en.wikipedia.org/wiki/Xcode
+c_compiler_version:    # [osx]
+  - 17                 # [osx]
+cxx_compiler_version:  # [osx]
+  - 17                 # [osx]
+
+# Need at least a 12.0 host or else tests will fail.
+extra_labels_for_os:
+  osx-arm64: [ventura]
 
 # Have to leave this for now or else the overlinking checks fail when we revert back to the aggregate CBC and use the
 # 11.1 sysroot.
-CONDA_BUILD_SYSROOT:                                         # [osx]
-  - /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk  # [osx]
+CONDA_BUILD_SYSROOT:
+  - /Library/Developer/CommandLineTools/SDKs/MacOSX14.5.sdk  # [osx and arm64]
