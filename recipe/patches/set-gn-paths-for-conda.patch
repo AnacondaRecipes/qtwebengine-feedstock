@@ -16,17 +16,19 @@ index f596aa2..e238f69 100644
    # Rust warnings
 
 diff --git a/src/3rdparty/chromium/build/mac/find_sdk.py b/src/3rdparty/chromium/build/mac/find_sdk.py
-index 3dcc4d5..951b759 100755
+index 3dcc4d5..6457d57 100755
 --- a/src/3rdparty/chromium/build/mac/find_sdk.py
 +++ b/src/3rdparty/chromium/build/mac/find_sdk.py
-@@ -69,14 +69,13 @@ def main():
+@@ -69,14 +69,15 @@ def main():
      print(err, file=sys.stderr)
      raise Exception('Error %d running xcode-select' % job.returncode)
    dev_dir = out.decode('UTF-8').rstrip()
 -  sdk_dir = os.path.join(
 -      dev_dir, 'Platforms/MacOSX.platform/Developer/SDKs')
-+  sdk_dir = os.path.join(dev_dir, 'SDKs')
- 
++  sdk_dir = os.environ.get("OSX_SDK_DIR")
++  if sdk_dir is None:
++    sdk_dir = os.path.join(dev_dir, 'SDKs')
+
    if not os.path.isdir(sdk_dir):
      raise SdkError('Install Xcode, launch it, accept the license ' +
        'agreement, and run `sudo xcode-select -s /path/to/Xcode.app` ' +
@@ -36,9 +38,9 @@ index 3dcc4d5..951b759 100755
    sdks = [s[0] for s in sdks if s]  # [['10.5'], ['10.6']] => ['10.5', '10.6']
    sdks = [s for s in sdks  # ['10.5', '10.6'] => ['10.6']
            if parse_version(s) >= parse_version(min_sdk_version)]
-@@ -90,8 +89,12 @@ def main():
+@@ -90,8 +91,12 @@ def main():
      print(sdk_path)
- 
+
    if options.print_bin_path:
 -    bin_path = 'Toolchains/XcodeDefault.xctoolchain/usr/bin/'
 -    print(os.path.join(dev_dir, bin_path))
@@ -48,7 +50,7 @@ index 3dcc4d5..951b759 100755
 +    else:
 +      bin_path = 'Toolchains/XcodeDefault.xctoolchain/usr/bin/'
 +      print(os.path.join(dev_dir, bin_path))
- 
+
    if options.print_sdk_build:
      system_version_plist = os.path.join(sdk_path,
 diff --git a/src/3rdparty/chromium/third_party/angle/src/libANGLE/renderer/metal/metal_backend.gni b/src/3rdparty/chromium/third_party/angle/src/libANGLE/renderer/metal/metal_backend.gni
@@ -62,6 +64,6 @@ index d3a8a1d..9f10553 100644
 -metal_internal_shader_compilation_supported =
 -    angle_has_build && !is_ios && target_os == host_os
 +metal_internal_shader_compilation_supported = false
- 
+
  metal_internal_shaders_header =
      "$root_gen_dir/angle/mtl_internal_shaders_metallib.h"

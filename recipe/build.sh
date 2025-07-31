@@ -40,12 +40,18 @@ if [[ "${target_platform}" == linux-* ]]; then
   # we're removing these headers and we should be able to stop as soon as Chromium provides a build option to
   # use_system_protobuf=1.
 
-  # We can't add ${PREFIX}/include to the include paths because the conda protobuf headers will get used instead of the
-  # vendored ones so we remove the conda ones to avoid conflicts.
+  # We can't add ${PREFIX}/include to the include paths because the conda protobuf and unicode headers will get used
+  # instead of the vendored ones so we remove the conda ones to avoid conflicts.
   rm -rf ${PREFIX}/include/google/protobuf
+  rm -rf ${PREFIX}/include/unicode
+  rm -rf ${PREFIX}/include/openssl
+  rm -rf ${PREFIX}/include/absl
 else
   CMAKE_ARGS="
     ${CMAKE_ARGS}
+    -DQT_FORCE_WARN_APPLE_SDK_AND_XCODE_CHECK=ON
+    -DQT_APPLE_SDK_PATH=${CONDA_BUILD_SYSROOT}
+    -DQT_MAC_SDK_VERSION=${OSX_SDK_VER}
     -DQT_FEATURE_webengine_system_freetype=ON
     -DQT_FEATURE_webengine_system_gbm=OFF
     -DQT_FEATURE_webengine_system_minizip=ON
@@ -87,7 +93,7 @@ cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS
   -DQT_FEATURE_webengine_system_glib=ON \
   -DQT_FEATURE_webengine_system_harfbuzz=ON \
   -DQT_FEATURE_webengine_system_icu=OFF \
-  -DQT_FEATURE_webengine_system_libevent=OFF \
+  -DQT_FEATURE_webengine_system_libevent=ON \
   -DQT_FEATURE_webengine_system_libjpeg=ON \
   -DQT_FEATURE_webengine_system_libpci=OFF \
   -DQT_FEATURE_webengine_system_libpng=ON \
@@ -97,7 +103,6 @@ cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS
   -DQT_FEATURE_webengine_system_libxslt=ON \
   -DQT_FEATURE_webengine_system_minizip=ON \
   -DQT_FEATURE_webengine_system_opus=ON \
-  -DQT_FEATURE_webengine_system_poppler=ON \
   -DQT_FEATURE_webengine_system_snappy=OFF \
   -DQT_FEATURE_webengine_system_zlib=ON
 

@@ -11,12 +11,12 @@ source:
     sha256: 787dfde22b348f6d620f2207ed7e32ad0a5389373182614272de28ff3f91c26c
     folder: {{ name }}
     patches:
-#      - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch  # [linux]
+      - patches/0001-gn-add-conda-paths.patch  # [linux]
 #      - patches/0002-chromium-force-bundled-libdrm-for-linux.patch
       - patches/0003-allow-building-with-non-apple-clang-version.patch  # [osx]
 #      - patches/0004-chromium-force-settings-to-build-without-xcode.patch
 #      - patches/0005-chromium-avoid-using-macos-12-13-14-symbols.patch
-#      - patches/0006-chromium-added-missing-headers.patch
+#      - patches/0006-chromium-added-missing-headers.patch  # [linux]
 #      - patches/0007-chromium-disable-glib-usage-for-linux-aarch64.patch
       - patches/0008-chromium-fix-readelf-path.patch              # [linux]
       # https://github.com/carsten-grimm-at-ipolog/vcpkg/blob/master/ports/qtwebengine/add-include-string.patch
@@ -71,37 +71,60 @@ requirements:
     - nodejs
     - perl
   host:
+    ### Qt Deps ###
     - qtbase-devel {{ version }}
     - qtdeclarative {{ version }}
     - qtwebchannel {{ version }}
     - qtwebsockets {{ version }}
     # Qt tools Designer is required to compile designer plugin.
     - qttools {{ version }}
-    - expat {{ expat }}                # [linux]
+    ### Linux Deps ###
+    # ALSA audio library (needed for QT_FEATURE_webengine_system_alsa=ON)
+    - alsa-lib {{ alsa_lib }}                      # [linux]
+    - dbus {{ dbus }}                              # [linux]
+    - expat {{ expat }}                            # [linux]
     # Qt6 requires at least 2.10.92 for access to FCConfigGetSysRoot()
     # https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcconfiggetsysroot.html
-    - fontconfig {{ fontconfig }}      # [linux]
-    - freetype {{ freetype }}          # [linux]
-    - gtk2 2.24.33                     # [linux]
-    - lcms2 {{ lcms2 }}                # [linux]
+    - fontconfig {{ fontconfig }}                  # [linux]
+    - freetype {{ freetype }}                      # [linux]
+    - gtk2 2.24.33                                 # [linux]
+    - lcms2 {{ lcms2 }}                            # [linux]
+    # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
+    - libcups 2.4                                  # [linux]
+    - libglx-devel {{ libglx }}                    # [linux]
     # Must build with same major version of protoc as Chromium (currently 3.20.3, so needs to be <4) or else generated
     # messages error out on include. Ideally, we only provide the vendored protoc to build with but mysql keeps pulling
     # it into the host env so we need to pin it.
-    - libprotobuf 3.20.3               # [linux]
-    - libudev {{ libudev }}            # [linux]
-    - nspr {{ nspr }}                  # [linux]
-    - nss {{ nss }}                    # [linux]
-    - openjpeg {{ openjpeg }}          # [linux]
-    - dbus {{ dbus }}                  # [linux]
-    - pcre {{ pcre }}                  # [linux and aarch64]
-    - libvulkan-headers {libvulkan}    # [linux]
-    - libvulkan-loader {libvulkan}     # [linux]
+    - libprotobuf 3.20.3                           # [linux]
+    - libvulkan-headers {{ libvulkan }}            # [linux]
+    - libvulkan-loader {{ libvulkan }}             # [linux]
+    # X11/XCB dependencies needed by QtWebEngine/Chromium
+    - libxcb {{ libxcb }}                          # [linux]
+    - libxkbcommon {{ libxkbcommon }}              # [linux]
+    - libxkbfile {{ libxkbfile }}                  # [linux]
+    - mesalib 25                                   # [linux]
+    - nspr {{ nspr }}                              # [linux]
+    - nss {{ nss }}                                # [linux]
+    - openjpeg {{ openjpeg }}                      # [linux]
+    - pcre {{ pcre }}                              # [linux and aarch64]
+    - re2 {{ re2 }}                                # [linux]
+    - xorg-libx11 {{ xorg_libx11 }}                # [linux]
+    - xorg-libxcomposite {{ xorg_libxcomposite }}  # [linux]
+    - xorg-libxcursor {{ xorg_libxcursor }}        # [linux]
+    - xorg-libxdamage {{ xorg_libxdamage }}        # [linux]
+    - xorg-libxext {{ xorg_libxext }}              # [linux]
+    - xorg-libxi {{ xorg_libxi }}                  # [linux]
+    - xorg-libxrandr {{ xorg_libxrandr }}          # [linux]
+    - xorg-libxshmfence {{ xorg_libxshmfence }}    # [linux]
+    - xorg-libxtst {{ xorg_libxtst }}              # [linux]
+    ### Other Deps ###
     - ffmpeg {{ ffmpeg }}
     - glib {{ glib }}
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
     - harfbuzz {{ harfbuzz }}
     - jpeg {{ jpeg }}
+    - libevent {{ libevent }}
     - libtiff {{ libtiff }}
     - libopus {{ libopus }}  # [unix]
     - libpng {{ libpng }}
@@ -111,20 +134,6 @@ requirements:
     # Both minizip and zlib have to be ON to use system minizip.
     - minizip {{ minizip }}
     - zlib {{ zlib }}
-    # ALSA audio library (needed for QT_FEATURE_webengine_system_alsa=ON)
-    - alsa-lib {{ alsa_lib }}          # [linux]
-    # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
-    - libcups 2.4                      # [linux]
-    # X11/XCB dependencies needed by QtWebEngine/Chromium
-    - libxkbcommon {{ libxkbcommon }}  # [linux]
-    - libxkbfile 1.1                   # [linux]
-    # Provides GL/glx.h
-    - libglx-devel {{ libglx }}        # [linux]
-    - libxcb {{ libxcb }}              # [linux]
-    - xorg-libx11 {{ xorg_libx11 }}    # [linux]
-    - xorg-libxext {{ xorg_libxext }}  # [linux]
-    - xorg-libxi {{ xorg_libxi }}      # [linux]
-    - mesalib 25                       # [linux]
   run_constrained:
     - qt-main >={{ version }},<7
     - qt >={{ version }},<7

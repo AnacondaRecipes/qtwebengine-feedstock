@@ -37,7 +37,7 @@ cmake --log-level STATUS -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DQT_FEATURE_webengine_system_glib=ON ^
     -DQT_FEATURE_webengine_system_harfbuzz=ON ^
     -DQT_FEATURE_webengine_system_icu=OFF ^
-    -DQT_FEATURE_webengine_system_libevent=OFF ^
+    -DQT_FEATURE_webengine_system_libevent=ON ^
     -DQT_FEATURE_webengine_system_libjpeg=ON ^
     -DQT_FEATURE_webengine_system_libpci=OFF ^
     -DQT_FEATURE_webengine_system_libpng=ON ^
@@ -47,7 +47,6 @@ cmake --log-level STATUS -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DQT_FEATURE_webengine_system_libxslt=ON ^
     -DQT_FEATURE_webengine_system_minizip=ON ^
     -DQT_FEATURE_webengine_system_opus=OFF ^
-    -DQT_FEATURE_webengine_system_poppler=ON ^
     -DQT_FEATURE_webengine_system_snappy=OFF ^
     -DQT_FEATURE_webengine_system_zlib=ON
 
