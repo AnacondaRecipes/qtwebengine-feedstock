@@ -8,23 +8,54 @@ Subject: [PATCH] Add gn args for libxslt and libwebp
  1 file changed, 8 insertions(+)
 
 diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
-index d5e9b71..2b30432 100644
+index d5e9b71..41a2124 100644
 --- a/src/core/CMakeLists.txt
 +++ b/src/core/CMakeLists.txt
-@@ -515,6 +515,14 @@ foreach(arch ${archs})
-                 CONDITION QT_FEATURE_webengine_vaapi
-             )
-             extend_gn_list(gnArgArg
-+                    ARGS use_system_libxslt
-+                    CONDITION QT_FEATURE_webengine_system_libxslt
-+            )
-+            extend_gn_list(gnArgArg
-+                    ARGS use_system_libwebp
-+                    CONDITION QT_FEATURE_webengine_system_libwebp
-+            )
-+            extend_gn_list(gnArgArg
-                 ARGS ozone_platform_x11 use_xkbcommon
-                 CONDITION QT_FEATURE_webengine_ozone_x11
-             )
+@@ -437,6 +437,26 @@ foreach(arch ${archs})
+             ARGS enable_webenginedriver
+             CONDITION QT_FEATURE_webenginedriver
+         )
++        extend_gn_list(gnArgArg
++            ARGS use_system_libxslt
++            CONDITION QT_FEATURE_webengine_system_libxslt
++        )
++        extend_gn_list(gnArgArg
++            ARGS use_system_libwebp
++            CONDITION QT_FEATURE_webengine_system_libwebp
++        )
++        extend_gn_list(gnArgArg
++            ARGS use_system_freetype
++            CONDITION QT_FEATURE_webengine_system_freetype
++        )
++        extend_gn_list(gnArgArg
++            ARGS use_system_libjpeg
++            CONDITION QT_FEATURE_webengine_system_libjpeg
++        )
++        extend_gn_list(gnArgArg
++            ARGS use_system_harfbuzz
++            CONDITION QT_FEATURE_webengine_system_harfbuzz
++        )
+
+         if(LINUX)
+             list(APPEND gnArgArg
+diff --git a/src/pdf/CMakeLists.txt b/src/pdf/CMakeLists.txt
+index 30369b9..3ba3dd9 100644
+--- a/src/pdf/CMakeLists.txt
++++ b/src/pdf/CMakeLists.txt
+@@ -238,6 +239,14 @@ foreach(arch ${archs})
+             ARGS use_qt_freetype
+             CONDITION QT_FEATURE_webengine_qt_freetype
+         )
++        extend_gn_list(gnArgArg
++            ARGS use_system_freetype
++            CONDITION QT_FEATURE_webengine_system_freetype
++        )
++        extend_gn_list(gnArgArg
++            ARGS pdf_bundle_freetype
++            CONDITION NOT QT_FEATURE_webengine_system_freetype
++        )
+
+         add_gn_command(
+             CMAKE_TARGET Pdf
 -- 
 2.45.2

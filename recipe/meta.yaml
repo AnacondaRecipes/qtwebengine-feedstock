@@ -11,21 +11,13 @@ source:
     sha256: 787dfde22b348f6d620f2207ed7e32ad0a5389373182614272de28ff3f91c26c
     folder: {{ name }}
     patches:
-      - patches/0001-gn-add-conda-paths.patch  # [linux]
-#      - patches/0002-chromium-force-bundled-libdrm-for-linux.patch
-      - patches/0003-allow-building-with-non-apple-clang-version.patch  # [osx]
-#      - patches/0004-chromium-force-settings-to-build-without-xcode.patch
-#      - patches/0005-chromium-avoid-using-macos-12-13-14-symbols.patch
-#      - patches/0006-chromium-added-missing-headers.patch  # [linux]
-#      - patches/0007-chromium-disable-glib-usage-for-linux-aarch64.patch
-      - patches/0008-chromium-fix-readelf-path.patch              # [linux]
-      # https://github.com/carsten-grimm-at-ipolog/vcpkg/blob/master/ports/qtwebengine/add-include-string.patch
-      - patches/0010-gn-add-include-string.patch                  # [win]
-      - patches/0011-use-binary-input-for-gperf-on-Windows.patch  # [win]
-#      - patches/0013-Disable-ScreenCaptureKit-on-OSX.patch        # [osx]
-      - patches/0012-add-gn-args-for-libxslt-and-libwebp.patch
-      - patches/force-xcode-version.patch  # [osx]
-      - patches/set-gn-paths-for-conda.patch  # [osx]
+      - patches/0001-gn-add-conda-paths.patch
+      - patches/0002-Add-system-lib-options-to-CMake-files.patch
+      - patches/0003-allow-building-with-non-apple-clang-version.patch     # [osx]
+      - patches/0004-chromium-force-settings-to-build-without-xcode.patch  # [osx]
+      - patches/force-sdk-version-and-osx-flags.patch                      # [osx]
+      - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
+      - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
 
 build:
   number: 0
@@ -34,14 +26,12 @@ build:
     - {{ pin_subpackage(name, max_pin='x.x') }}
   ignore_run_exports_from:
     # Vendored protobuf is bundled in the Chromium build so no need to require a conda package for it.
-    # Remove this once we upgrade to Qt 6.10. See also a workaround with headers in build.sh.
+    # Remove this once we upgrade to Qt 6.10.
     - libprotobuf                                  # [linux]
     # These packages are only needed at build time
     - qttools
     - qtwebsockets
     - libglx-devel                                 # [linux]
-    # TODO: Remove this once zlib and minizip get unvendored.
-    - minizip                                      # [linux]
   missing_dso_whitelist:
     - "*/api-ms-win-core-realtime-l1-1-1.dll"      # [win]
     - "*/api-ms-win-core-winrt-string-l1-1-0.dll"  # [win]
@@ -78,6 +68,7 @@ requirements:
     - qtwebsockets {{ version }}
     # Qt tools Designer is required to compile designer plugin.
     - qttools {{ version }}
+
     ### Linux Deps ###
     # ALSA audio library (needed for QT_FEATURE_webengine_system_alsa=ON)
     - alsa-lib {{ alsa_lib }}                      # [linux]
@@ -86,7 +77,6 @@ requirements:
     # Qt6 requires at least 2.10.92 for access to FCConfigGetSysRoot()
     # https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcconfiggetsysroot.html
     - fontconfig {{ fontconfig }}                  # [linux]
-    - freetype {{ freetype }}                      # [linux]
     - gtk2 2.24.33                                 # [linux]
     - lcms2 {{ lcms2 }}                            # [linux]
     # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
@@ -96,18 +86,13 @@ requirements:
     # messages error out on include. Ideally, we only provide the vendored protoc to build with but mysql keeps pulling
     # it into the host env so we need to pin it.
     - libprotobuf 3.20.3                           # [linux]
-    - libvulkan-headers {{ libvulkan }}            # [linux]
-    - libvulkan-loader {{ libvulkan }}             # [linux]
     # X11/XCB dependencies needed by QtWebEngine/Chromium
     - libxcb {{ libxcb }}                          # [linux]
     - libxkbcommon {{ libxkbcommon }}              # [linux]
     - libxkbfile {{ libxkbfile }}                  # [linux]
-    - mesalib 25                                   # [linux]
+    - mesalib {{ mesalib }}                        # [linux]
     - nspr {{ nspr }}                              # [linux]
     - nss {{ nss }}                                # [linux]
-    - openjpeg {{ openjpeg }}                      # [linux]
-    - pcre {{ pcre }}                              # [linux and aarch64]
-    - re2 {{ re2 }}                                # [linux]
     - xorg-libx11 {{ xorg_libx11 }}                # [linux]
     - xorg-libxcomposite {{ xorg_libxcomposite }}  # [linux]
     - xorg-libxcursor {{ xorg_libxcursor }}        # [linux]
@@ -117,23 +102,28 @@ requirements:
     - xorg-libxrandr {{ xorg_libxrandr }}          # [linux]
     - xorg-libxshmfence {{ xorg_libxshmfence }}    # [linux]
     - xorg-libxtst {{ xorg_libxtst }}              # [linux]
+
     ### Other Deps ###
-    - ffmpeg {{ ffmpeg }}
+    - freetype {{ freetype }}
     - glib {{ glib }}
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
     - harfbuzz {{ harfbuzz }}
-    - jpeg {{ jpeg }}
+    # Can't seem to force skia to build without libjpeg-turbo on Linux or macOS and turbo conflicts with our jpeg libs
+    # and headers.
+    - jpeg {{ jpeg }}                    # [win]
     - libevent {{ libevent }}
     - libtiff {{ libtiff }}
-    - libopus {{ libopus }}  # [unix]
-    - libpng {{ libpng }}
+    - libopus {{ libopus }}              # [unix]
+    - libvpx {{ libvpx }}                # [unix]
+    - libvulkan-headers {{ libvulkan }}  # [not osx]
+    - libvulkan-loader {{ libvulkan }}   # [not osx]
     - libwebp-base {{ libwebp_base }}
     - libxml2 {{ libxml2 }}
     - libxslt {{ libxslt }}
-    # Both minizip and zlib have to be ON to use system minizip.
-    - minizip {{ minizip }}
-    - zlib {{ zlib }}
+    # jpeg for QtWebEngine, openjpeg for QtPdf.
+    - openjpeg {{ openjpeg }}
+    - re2 {{ re2 }}
   run_constrained:
     - qt-main >={{ version }},<7
     - qt >={{ version }},<7

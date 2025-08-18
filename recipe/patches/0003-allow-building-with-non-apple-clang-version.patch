@@ -6,12 +6,12 @@ Subject: [PATCH 3/6] *: allow building with non-apple clang version.
 we use upstream clang, that is not part of xcode, we need this patch to force building
 with our clang.
 ---
- configure.cmake       | 4 ++--
- src/gn/CMakeLists.txt | 2 +-
+ configure.cmake                |  4 ++--
+ src/gn/CMakeLists.txt          |  2 +-
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/configure.cmake b/configure.cmake
-index 86c1202..9d5b70a 100644
+index 86c120248..9d5b70a60 100644
 --- a/configure.cmake
 +++ b/configure.cmake
 @@ -460,7 +460,7 @@ qt_webengine_configure_check("compiler"
@@ -33,7 +33,7 @@ index 86c1202..9d5b70a 100644
          (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
          (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 diff --git a/src/gn/CMakeLists.txt b/src/gn/CMakeLists.txt
-index 0920236..7f76067 100644
+index 09202364e..7f76067b9 100644
 --- a/src/gn/CMakeLists.txt
 +++ b/src/gn/CMakeLists.txt
 @@ -49,7 +49,7 @@ elseif(MSVC)
@@ -45,6 +45,5 @@ index 0920236..7f76067 100644
      set(platform darwin)
  else()
      message(FATAL_ERROR "Unsupported gn platform !")
--- 
-2.39.2 (Apple Git-143)
-
+--
+2.49.0

@@ -1,5 +1,8 @@
+pkg_build_image_tag: main-rockylinux-8  # [linux]
+
 # https://doc.qt.io/qt-6/macos.html
-c_stdlib_version:  # [not linux]
+c_stdlib_version:
+  - 2.28           # [linux]
   - 12.0           # [osx]
   - 2022.12        # [win]
 OSX_SDK_VER:
