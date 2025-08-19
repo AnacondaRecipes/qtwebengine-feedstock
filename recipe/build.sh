@@ -10,26 +10,18 @@ if [[ "${target_platform}" == linux-* ]]; then
   "
 
   if [[ "${target_platform}" == linux-aarch64 ]]; then
-    # Somehow a path for /usr/include/freetype2 is still making it into the CMake PkgConfig::FREETYPE IMPORT target.
-    #
     # Webenginedriver is just used for tests and does not link against vendored zlib correctly.
     #
     # Chromium vendors minigbm, a discontinued Intel project, which uses compiler features not compatible with our
     # aarch64 gcc compiler.
     CMAKE_ARGS="
       ${CMAKE_ARGS}
-      -DFREETYPE_FOUND=1
-      -DFREETYPE_INCLUDE_DIRS=${PREFIX}/include/freetype2
-      -DFREETYPE_LDFLAGS=${PREFIX}/usr/lib;-lfreetype
-      -DFREETYPE_LIBRARY_DIRS=${PREFIX}/usr/lib
-      -DQT_FEATURE_webengine_system_freetype=OFF
       -DQT_FEATURE_webengine_system_gbm=ON
       -DQT_FEATURE_webenginedriver=OFF
     "
   else
     CMAKE_ARGS="
       ${CMAKE_ARGS}
-      -DQT_FEATURE_webengine_system_freetype=ON
       -DQT_FEATURE_webengine_system_gbm=OFF
     "
   fi
@@ -44,7 +36,6 @@ else
     -DQT_FORCE_WARN_APPLE_SDK_AND_XCODE_CHECK=ON
     -DQT_APPLE_SDK_PATH=${CONDA_BUILD_SYSROOT}
     -DQT_MAC_SDK_VERSION=${OSX_SDK_VER}
-    -DQT_FEATURE_webengine_system_freetype=ON
     -DQT_FEATURE_webengine_system_gbm=OFF
     -DQT_FEATURE_webenginedriver=OFF
   "
@@ -55,22 +46,27 @@ fi
 # we're removing these headers and we should be able to stop as soon as Chromium provides a build option to
 # use_system_protobuf=1.
 #
-# We can't add ${PREFIX}/include to the include paths because our protobuf, unicode, openssl, and abseil packages are
-# both lib and development packages and the included headers will get used instead of the vendored ones. To resolve
-# this, we remove the conda ones to avoid conflicts but really these should be split into devel and lib packages so
-# the unwanted headers are never even installed.
+# We can't add ${PREFIX}/include to the include paths because our protobuf, unicode, openssl, abseil, zlib, and jpeg
+# packages are both lib and development packages and the included headers will get used instead of the vendored ones.
+# To resolve this, we remove the conda ones to avoid conflicts but really these should be split into devel and lib
+# packages so the unwanted headers are never even installed.
 rm -rf ${PREFIX}/include/google/protobuf
 rm -rf ${PREFIX}/include/unicode
 rm -rf ${PREFIX}/include/openssl
 rm -rf ${PREFIX}/include/absl
 rm -rf ${PREFIX}/include/vulkan
 rm -rf ${PREFIX}/include/zlib.h
+rm -rf ${PREFIX}/include/zconf.h
+if [[ "${target_platform}" == linux-* ]]; then
+  rm -rf ${PREFIX}/lib/libz${SHLIB_EXT}*
+else
+  rm -rf ${PREFIX}/lib/libz.*dylib
+fi
+rm -rf ${PREFIX}/lib/libz.a
 rm -rf ${PREFIX}/include/jconfig.h
 rm -rf ${PREFIX}/include/jerror.h
 rm -rf ${PREFIX}/include/jmorecfg.h
 rm -rf ${PREFIX}/include/jpeglib.h
-
-# TODO: Try to unbundle nasm and absl as well.
 
 # QT_FEATURE_webengine_system_icu has to be OFF or else icudtl.dat doesn't get installed
 # https://github.com/qt/qtwebengine/blob/6.9.1/src/core/api/CMakeLists.txt#L186
@@ -111,6 +107,7 @@ cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS
   -DQT_FEATURE_webengine_qt_libpng=OFF \
   -DQT_FEATURE_webengine_qt_zlib=OFF \
   -DQT_FEATURE_webengine_system_ffmpeg=OFF \
+  -DQT_FEATURE_webengine_system_freetype=ON \
   -DQT_FEATURE_webengine_system_glib=ON \
   -DQT_FEATURE_webengine_system_harfbuzz=ON \
   -DQT_FEATURE_webengine_system_icu=OFF \
@@ -126,7 +123,8 @@ cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS
   -DQT_FEATURE_webengine_system_libxslt=ON \
   -DQT_FEATURE_webengine_system_minizip=OFF \
   -DQT_FEATURE_webengine_system_opus=ON \
-  -DQT_FEATURE_webengine_system_snappy=OFF \
+  -DQT_FEATURE_webengine_system_re2=ON \
+  -DQT_FEATURE_webengine_system_snappy=ON \
   -DQT_FEATURE_webengine_system_ssl=OFF \
   -DQT_FEATURE_webengine_system_zlib=OFF
 

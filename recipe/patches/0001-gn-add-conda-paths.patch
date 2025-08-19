@@ -5,9 +5,13 @@ Subject: [PATCH 1/6] chromium: add conda CDT include paths to include_dirs
 
 cmake won't properly pass the include dirs to gn. we need to help it
 find our headers and libraries.
+
 ---
- src/3rdparty/chromium/build/config/compiler/BUILD.gn | 2 ++
- 1 file changed, 2 insertions(+)
+ src/3rdparty/chromium/build/config/BUILD.gn                   | 5 +++++
+ src/3rdparty/chromium/build/config/compiler/BUILD.gn          | 11 ++++++++++-
+ src/3rdparty/chromium/third_party/angle/BUILD.gn              | 11 ++++++++++-
+ src/3rdparty/chromium/third_party/vulkan-headers/src/BUILD.gn | 11 ++++++++++-
+ 4 files changed, 35 insertions(+), 3 deletions(-)
 
 diff --git a/src/3rdparty/chromium/build/config/BUILD.gn b/src/3rdparty/chromium/build/config/BUILD.gn
 index 55052f6..5e39693 100644
@@ -40,15 +44,17 @@ index 55052f6..5e39693 100644
  }
 
 diff --git a/src/3rdparty/chromium/build/config/compiler/BUILD.gn b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
-index f596aa2..c213e58 100644
+index f596aa2..d6b899d 100644
 --- a/src/3rdparty/chromium/build/config/compiler/BUILD.gn
 +++ b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
-@@ -253,7 +253,14 @@ assert(!(llvm_force_head_revision && use_remoteexec && host_os != "linux"),
+@@ -253,7 +253,16 @@ assert(!(llvm_force_head_revision && use_remoteexec && host_os != "linux"),
  # source root and might have conflicting versions of some headers) can remove
  # this and specify their own include paths.
  config("default_include_dirs") {
 -  include_dirs = [
-+  if (!is_win) {
++  if (is_win) {
++    include_dirs = []
++  } else {
 +    include_dirs = [
 +      getenv("PREFIX") + "/include",
 +      getenv("BUILD_PREFIX") + "/" + getenv("HOST") + "/sysroot/usr/include"
@@ -60,15 +66,17 @@ index f596aa2..c213e58 100644
      "//",
    ]
 diff --git a/src/3rdparty/chromium/third_party/angle/BUILD.gn b/src/3rdparty/chromium/third_party/angle/BUILD.gn
-index bdd0871..97d4eea 100644
+index bdd0871..1d53f63 100644
 --- a/src/3rdparty/chromium/third_party/angle/BUILD.gn
 +++ b/src/3rdparty/chromium/third_party/angle/BUILD.gn
-@@ -463,7 +483,14 @@ config("angle_asserts_config") {
+@@ -463,7 +463,16 @@ config("angle_asserts_config") {
  }
 
  config("angle_common_config") {
 -  include_dirs = [
-+  if (!is_win) {
++  if (is_win) {
++    include_dirs = []
++  } else {
 +    include_dirs = [
 +      getenv("PREFIX") + "/include",
 +      getenv("BUILD_PREFIX") + "/" + getenv("HOST") + "/sysroot/usr/include"
@@ -80,15 +88,17 @@ index bdd0871..97d4eea 100644
      "src/common/third_party/xxhash",
    ]
 diff --git a/src/3rdparty/chromium/third_party/vulkan-headers/src/BUILD.gn b/src/3rdparty/chromium/third_party/vulkan-headers/src/BUILD.gn
-index d5f104d..a18080f 100644
+index d5f104d..214691f 100644
 --- a/src/3rdparty/chromium/third_party/vulkan-headers/src/BUILD.gn
 +++ b/src/3rdparty/chromium/third_party/vulkan-headers/src/BUILD.gn
-@@ -6,7 +6,14 @@
+@@ -6,7 +6,16 @@
  import("//build_overrides/vulkan_headers.gni")
 
  config("vulkan_headers_config") {
 -  include_dirs = [ "include" ]
-+  if (!is_win) {
++  if (is_win) {
++    include_dirs = []
++  } else {
 +    include_dirs = [
 +      getenv("PREFIX") + "/include",
 +      getenv("BUILD_PREFIX") + "/" + getenv("HOST") + "/sysroot/usr/include"

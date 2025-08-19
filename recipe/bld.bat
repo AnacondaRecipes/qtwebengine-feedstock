@@ -53,7 +53,8 @@ cmake --log-level STATUS -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DQT_FEATURE_webengine_system_libxslt=ON ^
     -DQT_FEATURE_webengine_system_minizip=OFF ^
     -DQT_FEATURE_webengine_system_opus=OFF ^
-    -DQT_FEATURE_webengine_system_snappy=OFF ^
+    -DQT_FEATURE_webengine_system_re2=ON ^
+    -DQT_FEATURE_webengine_system_snappy=ON ^
     -DQT_FEATURE_webengine_system_ssl=OFF ^
     -DQT_FEATURE_webengine_system_zlib=OFF
 if errorlevel 1 exit 1

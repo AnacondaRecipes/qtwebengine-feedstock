@@ -5,10 +5,12 @@ Subject: [PATCH 3/6] *: allow building with non-apple clang version.
 
 we use upstream clang, that is not part of xcode, we need this patch to force building
 with our clang.
+
 ---
- configure.cmake                |  4 ++--
- src/gn/CMakeLists.txt          |  2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ configure.cmake                                      | 4 ++--
+ src/gn/CMakeLists.txt                                | 2 +-
+ src/3rdparty/chromium/build/config/compiler/BUILD.gn | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/configure.cmake b/configure.cmake
 index 86c120248..9d5b70a60 100644
@@ -45,5 +47,22 @@ index 09202364e..7f76067b9 100644
      set(platform darwin)
  else()
      message(FATAL_ERROR "Unsupported gn platform !")
+diff --git a/src/3rdparty/chromium/build/config/compiler/BUILD.gn b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+index f596aa2..e238f69 100644
+--- a/src/3rdparty/chromium/build/config/compiler/BUILD.gn
++++ b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+@@ -2240,9 +2240,9 @@ config("default_warnings") {
+   }
+
+   # TODO(crbug.com/355446806): Clean up and enable.
+-  if (is_apple) {
+-    ldflags += [ "-Wl,-no_warn_duplicate_libraries" ]
+-  }
++#  if (is_apple) {
++#    ldflags += [ "-Wl,-no_warn_duplicate_libraries" ]
++#  }
+
+   # Rust warnings
+
 --
 2.49.0

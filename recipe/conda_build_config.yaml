@@ -1,4 +1,4 @@
-pkg_build_image_tag: main-rockylinux-8  # [linux]
+pkg_build_image_tag: main-rockylinux-8
 
 # https://doc.qt.io/qt-6/macos.html
 c_stdlib_version:

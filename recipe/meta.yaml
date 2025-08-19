@@ -12,16 +12,16 @@ source:
     folder: {{ name }}
     patches:
       - patches/0001-gn-add-conda-paths.patch
-      - patches/0002-Add-system-lib-options-to-CMake-files.patch
+      - patches/0002-add-system-lib-options-to-cmake-files.patch
       - patches/0003-allow-building-with-non-apple-clang-version.patch     # [osx]
       - patches/0004-chromium-force-settings-to-build-without-xcode.patch  # [osx]
-      - patches/force-sdk-version-and-osx-flags.patch                      # [osx]
+      - patches/0005-set-rpath-on-generators-on-osx.patch                  # [osx]
+      - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
       - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
       - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
 
 build:
   number: 0
-  skip: True  # [osx and x86_64]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
   ignore_run_exports_from:
@@ -51,8 +51,6 @@ requirements:
     - msys2-bison    # [win]
     - msys2-flex     # [win]
     - msys2-gperf    # [win]
-    - msys2-patch    # [win]
-    - patch          # [unix]
     - pkg-config     # [unix]
     - libtool        # [unix]
     - cmake
@@ -124,6 +122,7 @@ requirements:
     # jpeg for QtWebEngine, openjpeg for QtPdf.
     - openjpeg {{ openjpeg }}
     - re2 {{ re2 }}
+    - snappy {{ snappy }}
   run_constrained:
     - qt-main >={{ version }},<7
     - qt >={{ version }},<7
