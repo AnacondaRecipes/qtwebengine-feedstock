@@ -1,7 +1,0 @@
-channels:
-  - https://staging.continuum.io/prefect/fs/qtdeclarative-feedstock/pr4/6607067
-  - https://staging.continuum.io/prefect/fs/qtshadertools-feedstock/pr4/1b13ff2
-  - https://staging.continuum.io/prefect/fs/qtsvg-feedstock/pr4/5f22efd
-  - https://staging.continuum.io/prefect/fs/qtwebsockets-feedstock/pr4/550f855
-  - https://staging.continuum.io/prefect/fs/qtwebchannel-feedstock/pr4/fe0fe34
-  - https://staging.continuum.io/prefect/fs/qttools-feedstock/pr4/6238d00
