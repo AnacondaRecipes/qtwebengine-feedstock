@@ -42,7 +42,7 @@ cmake --log-level STATUS -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
     -DQT_FEATURE_webengine_system_harfbuzz=ON ^
     -DQT_FEATURE_webengine_system_icu=OFF ^
     -DQT_FEATURE_webengine_system_libevent=ON ^
-    -DQT_FEATURE_webengine_system_libjpeg=ON ^
+    -DQT_FEATURE_webengine_system_libjpeg=OFF ^
     -DQT_FEATURE_webengine_system_libopenjpeg2=ON ^
     -DQT_FEATURE_webengine_system_libpci=OFF ^
     -DQT_FEATURE_webengine_system_libpng=OFF ^

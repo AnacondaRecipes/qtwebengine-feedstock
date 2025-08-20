@@ -19,6 +19,7 @@ source:
       - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
       - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
       - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
+      - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
 
 build:
   number: 0
@@ -107,9 +108,6 @@ requirements:
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
     - harfbuzz {{ harfbuzz }}
-    # Can't seem to force skia to build without libjpeg-turbo on Linux or macOS and turbo conflicts with our jpeg libs
-    # and headers.
-    - jpeg {{ jpeg }}                    # [win]
     - libevent {{ libevent }}
     - libtiff {{ libtiff }}
     - libopus {{ libopus }}              # [unix]
