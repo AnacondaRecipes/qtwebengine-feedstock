@@ -1,5 +1,15 @@
 @REM https://bugreports.qt.io/browse/QTBUG-107009
 set "PATH=%SRC_DIR%\build\lib\qt6\bin;%PATH%"
+del /S /Q /F %LIBRARY_INC%\openssl
+del /S /Q /F %LIBRARY_INC%\absl
+del /S /Q /F %LIBRARY_INC%\zlib.h
+del /S /Q /F %LIBRARY_LIB%\z.lib
+del /S /Q /F %LIBRARY_LIB%\zlib.lib
+del /S /Q /F %LIBRARY_LIB%\zlibstatic.lib
+del /S /Q /F %LIBRARY_INC%\include\jconfig.h
+del /S /Q /F %LIBRARY_INC%\include\jerror.h
+del /S /Q /F %LIBRARY_INC%\include\jmorecfg.h
+del /S /Q /F %LIBRARY_INC%\include\jpeglib.h
 
 :: QT_FEATURE_webengine_system_icu has to be OFF or else icudtl.dat doesn't get installed
 :: https://github.com/qt/qtwebengine/blob/6.9.1/src/core/api/CMakeLists.txt#L186

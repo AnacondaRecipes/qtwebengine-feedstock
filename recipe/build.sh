@@ -30,12 +30,15 @@ if [[ "${target_platform}" == linux-* ]]; then
   # find unvendored libraries in our host prefix.
   export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
 else
+  # webrtc controls ScreenCaptureKit on Mac, which we don't have right now.
+  #
   # Webenginedriver is just used for tests and does not link against vendored zlib correctly.
   CMAKE_ARGS="
     ${CMAKE_ARGS}
     -DQT_FORCE_WARN_APPLE_SDK_AND_XCODE_CHECK=ON
     -DQT_APPLE_SDK_PATH=${CONDA_BUILD_SYSROOT}
     -DQT_MAC_SDK_VERSION=${OSX_SDK_VER}
+    -DQT_FEATURE_webengine_webrtc=OFF
     -DQT_FEATURE_webengine_system_gbm=OFF
     -DQT_FEATURE_webenginedriver=OFF
   "
