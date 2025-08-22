@@ -38,7 +38,6 @@ else
     -DQT_FORCE_WARN_APPLE_SDK_AND_XCODE_CHECK=ON
     -DQT_APPLE_SDK_PATH=${CONDA_BUILD_SYSROOT}
     -DQT_MAC_SDK_VERSION=${OSX_SDK_VER}
-    -DQT_FEATURE_webengine_webrtc=OFF
     -DQT_FEATURE_webengine_system_gbm=OFF
     -DQT_FEATURE_webenginedriver=OFF
   "
@@ -61,7 +60,8 @@ rm -rf ${PREFIX}/include/vulkan
 rm -rf ${PREFIX}/include/zlib.h
 rm -rf ${PREFIX}/include/zconf.h
 if [[ "${target_platform}" == linux-* ]]; then
-  rm -rf ${PREFIX}/lib/libz${SHLIB_EXT}*
+#  rm -rf ${PREFIX}/lib/libz.so*
+  echo "Or not..."
 else
   rm -rf ${PREFIX}/lib/libz.*dylib
 fi
