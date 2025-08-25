@@ -53,7 +53,7 @@ index f596aa2..d6b899d 100644
  config("default_include_dirs") {
 -  include_dirs = [
 +  if (is_win) {
-+    include_dirs = [ getenv("LIBRARY_INC") ]
++    include_dirs = []
 +  } else {
 +    include_dirs = [
 +      getenv("PREFIX") + "/include",

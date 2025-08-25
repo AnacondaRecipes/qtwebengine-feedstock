@@ -38,8 +38,9 @@ else
     -DQT_FORCE_WARN_APPLE_SDK_AND_XCODE_CHECK=ON
     -DQT_APPLE_SDK_PATH=${CONDA_BUILD_SYSROOT}
     -DQT_MAC_SDK_VERSION=${OSX_SDK_VER}
-    -DQT_FEATURE_webengine_system_gbm=OFF
     -DQT_FEATURE_webenginedriver=OFF
+    -DQT_FEATURE_webengine_system_gbm=OFF
+    -DQT_FEATURE_webengine_system_ssl=OFF
   "
 fi
 
@@ -59,13 +60,6 @@ rm -rf ${PREFIX}/include/absl
 rm -rf ${PREFIX}/include/vulkan
 rm -rf ${PREFIX}/include/zlib.h
 rm -rf ${PREFIX}/include/zconf.h
-if [[ "${target_platform}" == linux-* ]]; then
-#  rm -rf ${PREFIX}/lib/libz.so*
-  echo "Or not..."
-else
-  rm -rf ${PREFIX}/lib/libz.*dylib
-fi
-rm -rf ${PREFIX}/lib/libz.a
 rm -rf ${PREFIX}/include/jconfig.h
 rm -rf ${PREFIX}/include/jerror.h
 rm -rf ${PREFIX}/include/jmorecfg.h
@@ -128,7 +122,6 @@ cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS
   -DQT_FEATURE_webengine_system_opus=ON \
   -DQT_FEATURE_webengine_system_re2=ON \
   -DQT_FEATURE_webengine_system_snappy=ON \
-  -DQT_FEATURE_webengine_system_ssl=OFF \
   -DQT_FEATURE_webengine_system_zlib=OFF
 
 cmake --build build --target install --config Release -j${CPU_COUNT}

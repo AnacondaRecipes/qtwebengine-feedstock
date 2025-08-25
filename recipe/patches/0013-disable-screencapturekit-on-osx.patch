@@ -20,5 +20,18 @@ index e1110f70170d..038cc5cacf63 100644
  }
 
  # Use another declare_args() to allow dependence on args defined above.
+diff --git a/src/3rdparty/chromium/content/browser/BUILD.gn b/src/3rdparty/chromium/content/browser/BUILD.gn
+index ce2c7bc..bbdef04 100644
+--- a/src/3rdparty/chromium/content/browser/BUILD.gn
++++ b/src/3rdparty/chromium/content/browser/BUILD.gn
+@@ -2856,6 +2856,8 @@ jumbo_source_set("browser") {
+         sources -= [
+           "media/capture/screen_capture_kit_device_mac.h",
+           "media/capture/screen_capture_kit_device_mac.mm",
++          "media/capture/screen_capture_kit_device_utils_mac.h",
++          "media/capture/screen_capture_kit_device_utils_mac.mm",
+           "media/capture/screen_capture_kit_fullscreen_module.h",
+           "media/capture/screen_capture_kit_fullscreen_module.mm",
+         ]
 --
 2.47.2

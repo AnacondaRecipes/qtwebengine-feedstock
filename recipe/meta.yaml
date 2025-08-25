@@ -19,7 +19,7 @@ source:
       - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
       - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
       - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
-#      - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
+      - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
 
 build:
   number: 0
@@ -33,6 +33,8 @@ build:
     - qttools
     - qtwebsockets
     - libglx-devel                                 # [linux]
+    - re2
+    - glib
   missing_dso_whitelist:
     - "*/api-ms-win-core-realtime-l1-1-1.dll"      # [win]
     - "*/api-ms-win-core-winrt-string-l1-1-0.dll"  # [win]
@@ -80,6 +82,8 @@ requirements:
     - lcms2 {{ lcms2 }}                            # [linux]
     # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
     - libcups 2.4                                  # [linux]
+    - libdrm {{ libdrm }}                          # [linux]
+    - libgl-devel {{ libgl }}                      # [linux]
     - libglx-devel {{ libglx }}                    # [linux]
     # Must build with same major version of protoc as Chromium (currently 3.20.3, so needs to be <4) or else generated
     # messages error out on include. Ideally, we only provide the vendored protoc to build with but mysql keeps pulling
@@ -89,25 +93,25 @@ requirements:
     - libxcb {{ libxcb }}                          # [linux]
     - libxkbcommon {{ libxkbcommon }}              # [linux]
     - libxkbfile {{ libxkbfile }}                  # [linux]
+    # mesalib provides libgbm.
     - mesalib {{ mesalib }}                        # [linux]
     - nspr {{ nspr }}                              # [linux]
     - nss {{ nss }}                                # [linux]
     - xorg-libx11 {{ xorg_libx11 }}                # [linux]
     - xorg-libxcomposite {{ xorg_libxcomposite }}  # [linux]
-    - xorg-libxcursor {{ xorg_libxcursor }}        # [linux]
     - xorg-libxdamage {{ xorg_libxdamage }}        # [linux]
     - xorg-libxext {{ xorg_libxext }}              # [linux]
-    - xorg-libxi {{ xorg_libxi }}                  # [linux]
+    - xorg-libxfixes {{ xorg_libxfixes }}          # [linux]
     - xorg-libxrandr {{ xorg_libxrandr }}          # [linux]
-    - xorg-libxshmfence {{ xorg_libxshmfence }}    # [linux]
     - xorg-libxtst {{ xorg_libxtst }}              # [linux]
 
     ### Other Deps ###
-    - freetype {{ freetype }}  # [unix]
+    - freetype {{ freetype }}            # [unix]
     - glib {{ glib }}
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
     - harfbuzz {{ harfbuzz }}
+    - lcms2 {{ lcms2 }}
     - libevent {{ libevent }}
     - libtiff {{ libtiff }}
     - libopus {{ libopus }}              # [unix]
