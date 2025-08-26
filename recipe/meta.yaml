@@ -33,7 +33,6 @@ build:
     - qttools
     - qtwebsockets
     - libglx-devel                                 # [linux]
-    - re2
     - glib
   missing_dso_whitelist:
     - "*/api-ms-win-core-realtime-l1-1-1.dll"      # [win]
