@@ -71,7 +71,7 @@ index d5e9b71..d9cdddc 100644
              list(APPEND gnArgArg
                  use_external_popup_menu=false
                  skia_use_metal=false
-+                enable_screen_capture=false
++                enable_screen_capture=true
 +            )
 +        else()
 +            extend_gn_list(gnArgArg
