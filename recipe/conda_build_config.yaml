@@ -1,9 +1,9 @@
 # https://doc.qt.io/qt-6/macos.html
 c_stdlib_version:
-  - 13.2           # [osx]
+  - 12.3           # [osx]
   - 2022.12        # [win]
-OSX_SDK_VER:
-  - 14.5
+OSX_SDK_VER:       # [osx]
+  - 14.5           # [osx]
 
 # https://doc.qt.io/qt-6/windows.html
 c_compiler:    # [win]
@@ -18,11 +18,7 @@ c_compiler_version:    # [osx]
 cxx_compiler_version:  # [osx]
   - 17                 # [osx]
 
-# Need at least a 12.0 host or else tests will fail.
-extra_labels_for_os:
-  osx-arm64: [ventura]
-
 # Have to leave this for now or else the overlinking checks fail when we revert back to the aggregate CBC and use the
-# 11.1 sysroot.
+# 12.1 sysroot.
 CONDA_BUILD_SYSROOT:
   - /Library/Developer/CommandLineTools/SDKs/MacOSX14.5.sdk  # [osx and arm64]
