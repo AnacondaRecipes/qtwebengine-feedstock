@@ -30,8 +30,9 @@ if [[ "${target_platform}" == linux-* ]]; then
   # find unvendored libraries in our host prefix.
   export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
 else
-  # webrtc controls ScreenCaptureKit on Mac, which we don't have right now.
-  #
+  # Make sure the PBP graph includes env vars we're using in patches.
+  echo ${OSX_SDK_DIR}
+
   # Webenginedriver is just used for tests and does not link against vendored zlib correctly.
   CMAKE_ARGS="
     ${CMAKE_ARGS}

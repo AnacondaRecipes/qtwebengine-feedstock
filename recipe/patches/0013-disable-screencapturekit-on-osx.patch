@@ -1,14 +1,43 @@
-From 70656f460cd46ccb2213e3cc88af7491134717c2 Mon Sep 17 00:00:00 2001
+From 2f1400676c91ae26a80c0f72d090d2208ff2ebbc Mon Sep 17 00:00:00 2001
 From: Brian Wing <bwing@anaconda.com>
-Date: Thu, 27 Mar 2025 13:56:53 -0400
+Date: Thu, 18 Sep 2025 09:22:13 -0400
 Subject: [PATCH] Disable ScreenCaptureKit on OSX
 
 ---
- src/3rdparty/chromium/media/media_options.gni | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/3rdparty/chromium/content/browser/BUILD.gn                                           | 2 ++
+ src/3rdparty/chromium/content/browser/media/capture/native_screen_capture_picker_mac.mm  | 3 +--
+ src/3rdparty/chromium/media/media_options.gni                                            | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/src/3rdparty/chromium/content/browser/BUILD.gn b/src/3rdparty/chromium/content/browser/BUILD.gn
+index ce2c7bc8d989..bbdef041862c 100644
+--- a/src/3rdparty/chromium/content/browser/BUILD.gn
++++ b/src/3rdparty/chromium/content/browser/BUILD.gn
+@@ -2856,6 +2856,8 @@ jumbo_source_set("browser") {
+         sources -= [
+           "media/capture/screen_capture_kit_device_mac.h",
+           "media/capture/screen_capture_kit_device_mac.mm",
++          "media/capture/screen_capture_kit_device_utils_mac.h",
++          "media/capture/screen_capture_kit_device_utils_mac.mm",
+           "media/capture/screen_capture_kit_fullscreen_module.h",
+           "media/capture/screen_capture_kit_fullscreen_module.mm",
+         ]
+diff --git a/src/3rdparty/chromium/content/browser/media/capture/native_screen_capture_picker_mac.mm b/src/3rdparty/chromium/content/browser/media/capture/native_screen_capture_picker_mac.mm
+index 0d6a3d1932e9..9dbcd8e87c6b 100644
+--- a/src/3rdparty/chromium/content/browser/media/capture/native_screen_capture_picker_mac.mm
++++ b/src/3rdparty/chromium/content/browser/media/capture/native_screen_capture_picker_mac.mm
+@@ -206,8 +206,7 @@ NativeScreenCapturePickerMac::CreateDevice(const DesktopMediaID& source) {
+     cached_content_filters_[source_id] = filter;
+   }
+
+-  std::unique_ptr<media::VideoCaptureDevice> device =
+-      CreateScreenCaptureKitDeviceMac(source, filter);
++  std::unique_ptr<media::VideoCaptureDevice> device = nullptr;
+   return device;
+ }
 
 diff --git a/src/3rdparty/chromium/media/media_options.gni b/src/3rdparty/chromium/media/media_options.gni
-index e1110f70170d..038cc5cacf63 100644
+index 9eb703e67af7..a208b450689f 100644
 --- a/src/3rdparty/chromium/media/media_options.gni
 +++ b/src/3rdparty/chromium/media/media_options.gni
 @@ -132,7 +132,7 @@ declare_args() {
@@ -21,4 +50,4 @@ index e1110f70170d..038cc5cacf63 100644
 
  # Use another declare_args() to allow dependence on args defined above.
 --
-2.47.2
+2.50.1

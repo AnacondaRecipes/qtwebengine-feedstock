@@ -1,5 +1,5 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.9.1" %}
+{% set version = "6.9.2" %}
 
 
 package:
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: 787dfde22b348f6d620f2207ed7e32ad0a5389373182614272de28ff3f91c26c
+    sha256: 99cb0792abc2e39b299d73d8e2aa076b9ebcd55c3f4a4b5fd514eef5a62d03ab
     folder: {{ name }}
     patches:
       - patches/0001-gn-add-conda-paths.patch
@@ -19,10 +19,11 @@ source:
       - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
       - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
       - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
-#      - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
+      - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
 
 build:
   number: 0
+  # https://doc.qt.io/qt-6/qt-releases.html#binary-compatibility
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
   ignore_run_exports_from:
@@ -124,9 +125,6 @@ requirements:
     - openjpeg {{ openjpeg }}
     - re2 {{ re2 }}
     - snappy {{ snappy }}
-  run_constrained:
-    - qt-main >={{ version }},<7
-    - qt >={{ version }},<7
 
 test:
   requires:
