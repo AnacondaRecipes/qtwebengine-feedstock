@@ -22,7 +22,7 @@ source:
       - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
 
 build:
-  number: 0
+  number: 1
   # https://doc.qt.io/qt-6/qt-releases.html#binary-compatibility
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
