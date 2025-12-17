@@ -1,6 +1,6 @@
 # https://doc.qt.io/qt-6/macos.html
 c_stdlib_version:
-  - 15.2           # [osx]
+  - 12.3           # [osx]
   - 2022.12        # [win]
 OSX_SDK_VER:       # [osx]
   - 15             # [osx]
