@@ -1,6 +1,6 @@
 # https://doc.qt.io/qt-6/macos.html
 c_stdlib_version:
-  - 12.3           # [osx]
+  - 15.2           # [osx]
   - 2022.12        # [win]
 OSX_SDK_VER:       # [osx]
   - 15             # [osx]
@@ -13,10 +13,12 @@ cxx_compiler:  # [win]
 
 # XCode 15.0 came with SDK 14.0 and clang 15
 # https://en.wikipedia.org/wiki/Xcode
-c_compiler_version:    # [osx]
+c_compiler_version:
   - 20                 # [osx]
-cxx_compiler_version:  # [osx]
+  - 11                 # [linux]
+cxx_compiler_version:
   - 20                 # [osx]
+  - 11                 # [linux]
 
 # Have to leave this for now or else the overlinking checks fail when we revert back to the aggregate CBC and use the
 # 12.1 sysroot.
