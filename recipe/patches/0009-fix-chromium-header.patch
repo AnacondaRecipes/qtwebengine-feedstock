@@ -1,0 +1,12 @@
+diff --git a/src/3rdparty/chromium/third_party/minigbm/src/dri.c b/src/3rdparty/chromium/third_party/minigbm/src/dri.c
+index 27331cf1021..3296f85bdbc 100644
+--- a/src/3rdparty/chromium/third_party/minigbm/src/dri.c
++++ b/src/3rdparty/chromium/third_party/minigbm/src/dri.c
+@@ -7,6 +7,7 @@
+ #ifdef DRV_AMDGPU
+ 
+ #include <assert.h>
++#include <libgen.h>
+ #include <dlfcn.h>
+ #include <errno.h>
+ #include <fcntl.h>

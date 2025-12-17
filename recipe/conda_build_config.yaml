@@ -15,10 +15,10 @@ cxx_compiler:  # [win]
 # https://en.wikipedia.org/wiki/Xcode
 c_compiler_version:
   - 20                 # [osx]
-  - 11                 # [linux]
+  # - 11                 # [linux]
 cxx_compiler_version:
   - 20                 # [osx]
-  - 11                 # [linux]
+  # - 11                 # [linux]
 
 # Have to leave this for now or else the overlinking checks fail when we revert back to the aggregate CBC and use the
 # 12.1 sysroot.
