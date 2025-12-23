@@ -1,6 +1,6 @@
 @REM https://bugreports.qt.io/browse/QTBUG-107009
 set "PATH=%SRC_DIR%\build\lib\qt6\bin;%PATH%"
-
+subst Y: "%SRC_DIR%"
 del /S /Q /F %LIBRARY_INC%\openssl
 del /S /Q /F %LIBRARY_INC%\absl
 del /S /Q /F %LIBRARY_INC%\zlib.h
@@ -22,7 +22,7 @@ del /S /Q /F %LIBRARY_INC%\jpeglib.h
 :: Need at least ffmpeg v7.0 to unvendor on Windows.
 :: Need at least libpng v1.6.43 to unvendor on Windows.
 :: Need at least zlib v1.3.0 to unvendor on Windows.
-cmake --log-level STATUS -S"%SRC_DIR%/%PKG_NAME%" -B"%SRC_DIR%\build" -GNinja ^
+cmake --log-level STATUS -S"Y:\%PKG_NAME%" -B"Y:\build" -GNinja ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^
     -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^
