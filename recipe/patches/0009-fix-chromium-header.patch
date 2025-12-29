@@ -1,0 +1,20 @@
+diff --git a/src/3rdparty/chromium/third_party/minigbm/src/drv.c b/src/3rdparty/chromium/third_party/minigbm/src/drv.c
+index 9cfdbfb82d5..0a5c4b6322e 100644
+--- a/src/3rdparty/chromium/third_party/minigbm/src/drv.c
++++ b/src/3rdparty/chromium/third_party/minigbm/src/drv.c
+@@ -4,6 +4,7 @@
+  * found in the LICENSE file.
+  */
+ #include <assert.h>
++#include <libgen.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <pthread.h>
+@@ -17,7 +18,6 @@
+ 
+ #ifdef __ANDROID__
+ #include <cutils/log.h>
+-#include <libgen.h>
+ #endif
+ 
+ #include "drv_helpers.h"

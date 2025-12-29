@@ -1,7 +1,6 @@
 {% set name = "qtwebengine" %}
 {% set version = "6.9.2" %}
 
-
 package:
   name: {{ name }}
   version: {{ version }}
@@ -18,6 +17,7 @@ source:
       - patches/0005-set-rpath-on-generators-on-osx.patch                  # [osx]
       - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
       - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
+      - patches/0009-fix-chromium-header.patch                             # [linux]
       - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
       - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
 

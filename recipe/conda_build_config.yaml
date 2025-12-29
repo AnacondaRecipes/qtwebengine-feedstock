@@ -13,9 +13,9 @@ cxx_compiler:  # [win]
 
 # XCode 15.0 came with SDK 14.0 and clang 15
 # https://en.wikipedia.org/wiki/Xcode
-c_compiler_version:    # [osx]
+c_compiler_version:
   - 20                 # [osx]
-cxx_compiler_version:  # [osx]
+cxx_compiler_version:
   - 20                 # [osx]
 
 # Have to leave this for now or else the overlinking checks fail when we revert back to the aggregate CBC and use the
