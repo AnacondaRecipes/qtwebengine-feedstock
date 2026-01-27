@@ -1,0 +1,10 @@
+channels:
+  - https://staging.continuum.io/pbp/fs/qtbase-feedstock/pr19/96255f9
+  - https://staging.continuum.io/pbp/fs/qtshadertools-feedstock/pr7/0d24cd8
+  - https://staging.continuum.io/pbp/fs/qtsvg-feedstock/pr7/bdf4bf1
+  - https://staging.continuum.io/pbp/fs/qtdeclarative-feedstock/pr7/3f0cffd
+  - https://staging.continuum.io/pbp/fs/qtwebsockets-feedstock/pr7/5c570c4
+  - https://staging.continuum.io/pbp/fs/qttools-feedstock/pr7/050f7b8
+  - https://staging.continuum.io/pbp/fs/qtwebchannel-feedstock/pr7/899e5c2
+
+task_timeout: 54000
