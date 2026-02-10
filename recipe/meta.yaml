@@ -1,5 +1,5 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.9.2" %}
+{% set version = "6.10.1" %}
 
 package:
   name: {{ name }}
@@ -7,22 +7,25 @@ package:
 
 source:
   - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: 99cb0792abc2e39b299d73d8e2aa076b9ebcd55c3f4a4b5fd514eef5a62d03ab
+    sha256: 77b5ea6186a0429a6b8e656faedd5cd3e8019d33856ee59637698ab578ead1e3
     folder: {{ name }}
     patches:
-      - patches/0001-gn-add-conda-paths.patch
+      - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
       - patches/0002-add-system-lib-options-to-cmake-files.patch
       - patches/0003-allow-building-with-non-apple-clang-version.patch     # [osx]
       - patches/0004-chromium-force-settings-to-build-without-xcode.patch  # [osx]
       - patches/0005-set-rpath-on-generators-on-osx.patch                  # [osx]
       - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
-      - patches/0008-chromium-fix-readelf-path.patch                       # [linux]
-      - patches/0009-fix-chromium-header.patch                             # [linux]
-      - patches/0011-use-binary-input-for-gperf-on-Windows.patch           # [win]
-      - patches/0013-disable-screencapturekit-on-osx.patch                 # [osx]
+      - patches/0007-chromium-fix-readelf-path.patch                       # [linux]
+      - patches/0008-use-binary-input-for-gperf-on-Windows.patch           # [win]
+      - patches/0009-Disable-ScreenCaptureKit-on-OSX.patch                 # [osx]
+      # Missing _GNU_SOURCE macro definition causes asprintf and vasprintf functions to be undeclared in glibc headers.
+      # These are GNU extensions that require _GNU_SOURCE to be defined before including <stdio.h>.
+      # qtwebengine/src/3rdparty/chromium/third_party/libdrm/src/xf86drm.c:362:9: error: implicit declaration of function 'asprintf'; did you mean 'vsprintf'?
+      - patches/0010-Add-gnu-resource.patch                                # [linux]
 
 build:
-  number: 1
+  number: 0
   # https://doc.qt.io/qt-6/qt-releases.html#binary-compatibility
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
@@ -58,7 +61,7 @@ requirements:
     - libtool        # [unix]
     - cmake
     - html5lib
-    - ninja
+    - ninja-base
     - nodejs
     - perl
   host:
@@ -129,10 +132,11 @@ requirements:
 test:
   requires:
     - {{ stdlib('c') }}
+    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - make                              # [unix]
     - pkg-config                        # [unix]
-    - qtbase-devel
+    - qtbase-devel {{ version }}
   files:
     - test/main-qtwebengine.cpp
     - test/qml.qrc
