@@ -153,7 +153,7 @@ about:
   summary: Cross-platform application and UI framework ({{ name[2:] }} libraries).
   description: |
     Qt helps you create connected devices, UIs & applications that run
-    anywhere on any device, on any operating system at any time ({{ name[2:] }} libraries).
+    anywhere on any device, on any operating system at any time ({{ name[2:] }} libraries)
   doc_url: https://doc.qt.io/
   dev_url: https://github.com/qt/{{ name }}
 
