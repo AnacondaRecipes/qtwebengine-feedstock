@@ -1,1 +1,10 @@
 task_timeout: 54000
+
+channels:
+  - https://staging.continuum.io/pbp/fs/qtbase-feedstock/pr21/901c992
+  - https://staging.continuum.io/pbp/fs/qtshadertools-feedstock/pr8/8c9cbf5
+  - https://staging.continuum.io/pbp/fs/qtsvg-feedstock/pr8/fa29831
+  - https://staging.continuum.io/pbp/fs/qtdeclarative-feedstock/pr8/c1592fb
+  - https://staging.continuum.io/pbp/fs/qtwebsockets-feedstock/pr8/3365df4
+  - https://staging.continuum.io/pbp/fs/qttools-feedstock/pr8/49e64ed
+  - https://staging.continuum.io/pbp/fs/qtwebchannel-feedstock/pr8/8c11ca3

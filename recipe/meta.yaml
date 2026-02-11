@@ -1,5 +1,5 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.10.1" %}
+{% set version = "6.10.2" %}
 
 package:
   name: {{ name }}
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: 77b5ea6186a0429a6b8e656faedd5cd3e8019d33856ee59637698ab578ead1e3
+    sha256: 856eddf292a69a88618567deea67711b4ec720e69bcb575ed7bb539c9023961e
     folder: {{ name }}
     patches:
       - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
