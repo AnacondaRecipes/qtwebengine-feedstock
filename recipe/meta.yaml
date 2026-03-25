@@ -62,7 +62,10 @@ requirements:
     - cmake
     - html5lib
     - ninja-base
-    - nodejs
+    - nodejs  # [unix]
+    # On win nodejs 24 crashed without output
+    # RuntimeError: Command '...node.exe ...@rollup/wasm-node/dist/bin/rollup ...'
+    - nodejs >=20,<21  # [win]
     - perl
   host:
     ### Qt Deps ###
@@ -111,6 +114,9 @@ requirements:
     ### Other Deps ###
     - freetype {{ freetype }}            # [unix]
     - glib {{ glib }}
+    # chromium
+    - spirv-headers 1.4.341.0
+    - spirv-tools 2026.1
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
     - harfbuzz {{ harfbuzz }}
