@@ -21,3 +21,6 @@ cxx_compiler_version:
 
 CONDA_BUILD_SYSROOT:
   - /Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk  # [osx]
+
+libvpx:
+  - '1.16'
