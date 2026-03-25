@@ -1,5 +1,5 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.10.2" %}
+{% set version = "6.11.0" %}
 
 package:
   name: {{ name }}
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: 856eddf292a69a88618567deea67711b4ec720e69bcb575ed7bb539c9023961e
+    sha256: 63b921c8b2dd59152ced9a796676010166df044588ee00ef9429dc2fd2146736
     folder: {{ name }}
     patches:
       - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
@@ -146,7 +146,7 @@ test:
   # The test commands are in run_test.sh and run_test.bat
 
 about:
-  home: https://www.qt.io/
+  home: https://www.qt.io
   license: LGPL-3.0-only
   license_file: {{ name }}/LICENSES/LGPL-3.0-only.txt
   license_family: LGPL
@@ -154,7 +154,7 @@ about:
   description: |
     Qt helps you create connected devices, UIs & applications that run
     anywhere on any device, on any operating system at any time ({{ name[2:] }} libraries)
-  doc_url: https://doc.qt.io/
+  doc_url: https://doc.qt.io
   dev_url: https://github.com/qt/{{ name }}
 
 extra:
