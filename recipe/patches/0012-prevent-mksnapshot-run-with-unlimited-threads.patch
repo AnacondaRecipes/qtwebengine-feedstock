@@ -1,0 +1,27 @@
+From ceab37becd63d36a7d3be1e2e0cb694a065719ae Mon Sep 17 00:00:00 2001
+From: Andrii Osipov <aosipov@anaconda.com>
+Date: Thu, 26 Mar 2026 10:29:54 -0700
+Subject: [PATCH] Prevent mksnapshot run with unlimited threads
+
+---
+ src/3rdparty/chromium/v8/BUILD.gn | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/3rdparty/chromium/v8/BUILD.gn b/src/3rdparty/chromium/v8/BUILD.gn
+index 4c6f7fb4b1..6cfc2acaf2 100644
+--- a/src/3rdparty/chromium/v8/BUILD.gn
++++ b/src/3rdparty/chromium/v8/BUILD.gn
+@@ -2674,7 +2674,9 @@ template("run_mksnapshot") {
+         "--concurrent-builtin-generation",
+ 
+         # Use all the cores for concurrent builtin generation.
+-        "--concurrent-turbofan-max-threads=0",
++        # To prevent exhaust available RAM, leading to the -5 crash when mksnapshot is running.
++        # --concurrent-turbofan-max-threads=0 (unlimited threads)
++        "--concurrent-turbofan-max-threads=4",
+       ]
+     }
+ 
+-- 
+2.39.3 (Apple Git-146)
+

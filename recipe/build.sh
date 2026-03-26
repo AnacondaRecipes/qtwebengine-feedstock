@@ -66,9 +66,6 @@ rm -rf ${PREFIX}/include/jerror.h
 rm -rf ${PREFIX}/include/jmorecfg.h
 rm -rf ${PREFIX}/include/jpeglib.h
 
-$SRC_DIR/build/src/core/Release/aarch64/mksnapshot --help
-echo "Exit: $?"
-
 # QT_FEATURE_webengine_system_icu has to be OFF or else icudtl.dat doesn't get installed
 # https://github.com/qt/qtwebengine/blob/6.9.1/src/core/api/CMakeLists.txt#L186
 #
@@ -77,75 +74,69 @@ echo "Exit: $?"
 # Need at least zlib v1.3.0 to unvendor on Unix.
 #
 # Both minizip and zlib have to be ON to use system minizip.
-#cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS} \
-#  -DCMAKE_PREFIX_PATH=${PREFIX} \
-#  -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-#  -DCMAKE_INSTALL_RPATH=${PREFIX}/lib \
-#  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-#  -DCMAKE_FIND_FRAMEWORK=LAST \
-#  -DBUILD_WITH_PCH=OFF \
-#  -DINSTALL_BINDIR=lib/qt6/bin \
-#  -DINSTALL_PUBLICBINDIR=bin \
-#  -DINSTALL_LIBEXECDIR=lib/qt6 \
-#  -DINSTALL_DOCDIR=share/doc/qt6 \
-#  -DINSTALL_ARCHDATADIR=lib/qt6 \
-#  -DINSTALL_DATADIR=share/qt6 \
-#  -DINSTALL_INCLUDEDIR=include/qt6 \
-#  -DINSTALL_MKSPECSDIR=lib/qt6/mkspecs \
-#  -DINSTALL_EXAMPLESDIR=share/doc/qt6/examples \
-#  -DQT_FEATURE_qtpdf_build=ON \
-#  -DQT_FEATURE_qtpdf_quick_build=ON \
-#  -DQT_FEATURE_qtpdf_widgets_build=ON \
-#  -DQT_FEATURE_qtwebengine_build=ON \
-#  -DQT_FEATURE_qtwebengine_core_build=ON \
-#  -DQT_FEATURE_qtwebengine_quick_build=ON \
-#  -DQT_FEATURE_qtwebengine_widgets_build=ON \
-#  -DQT_FEATURE_webengine_jumbo_build=OFF \
-#  -DQT_FEATURE_webengine_pepper_plugins=ON \
-#  -DQT_FEATURE_webengine_printing_and_pdf=ON \
-#  -DQT_FEATURE_webengine_qt_freetype=OFF \
-#  -DQT_FEATURE_webengine_qt_libjpeg=OFF \
-#  -DQT_FEATURE_webengine_qt_libpng=OFF \
-#  -DQT_FEATURE_webengine_qt_zlib=OFF \
-#  -DQT_FEATURE_webengine_system_ffmpeg=OFF \
-#  -DQT_FEATURE_webengine_system_freetype=ON \
-#  -DQT_FEATURE_webengine_system_glib=ON \
-#  -DQT_FEATURE_webengine_system_harfbuzz=ON \
-#  -DQT_FEATURE_webengine_system_icu=OFF \
-#  -DQT_FEATURE_webengine_system_libevent=ON \
-#  -DQT_FEATURE_webengine_system_libjpeg=OFF \
-#  -DQT_FEATURE_webengine_system_libopenjpeg2=ON \
-#  -DQT_FEATURE_webengine_system_libpci=OFF \
-#  -DQT_FEATURE_webengine_system_libpng=OFF \
-#  -DQT_FEATURE_webengine_system_libtiff=ON \
-#  -DQT_FEATURE_webengine_system_libvpx=ON \
-#  -DQT_FEATURE_webengine_system_libwebp=ON \
-#  -DQT_FEATURE_webengine_system_libxml=ON \
-#  -DQT_FEATURE_webengine_system_libxslt=ON \
-#  -DQT_FEATURE_webengine_system_minizip=OFF \
-#  -DQT_FEATURE_webengine_system_opus=ON \
-#  -DQT_FEATURE_webengine_system_re2=ON \
-#  -DQT_FEATURE_webengine_system_snappy=ON \
-#  -DQT_FEATURE_webengine_system_zlib=OFF
-#
-#if [[ "${target_platform}" == linux-aarch64 ]]; then
-#  # To prevent exhaust available RAM, leading to the -5 crash when mksnapshot is running.
-#  cmake --build build --target install --config Release -j4
-#else
-#  cmake --build build --target install --config Release -j${CPU_COUNT}
-#fi
-#
-#pushd "${PREFIX}"
-#
-#mkdir -p bin
-#
-#if [[ -f "${SRC_DIR}"/build/user_facing_tool_links.txt ]]; then
-#  for links in "${SRC_DIR}"/build/user_facing_tool_links.txt; do
-#    while read _line; do
-#      if [[ -n "${_line}" ]]; then
-#        ln -sf ${_line}
-#      fi
-#    done < ${links}
-#  done
-#fi
-#
+cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS} \
+  -DCMAKE_PREFIX_PATH=${PREFIX} \
+  -DCMAKE_INSTALL_PREFIX=${PREFIX} \
+  -DCMAKE_INSTALL_RPATH=${PREFIX}/lib \
+  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
+  -DCMAKE_FIND_FRAMEWORK=LAST \
+  -DBUILD_WITH_PCH=OFF \
+  -DINSTALL_BINDIR=lib/qt6/bin \
+  -DINSTALL_PUBLICBINDIR=bin \
+  -DINSTALL_LIBEXECDIR=lib/qt6 \
+  -DINSTALL_DOCDIR=share/doc/qt6 \
+  -DINSTALL_ARCHDATADIR=lib/qt6 \
+  -DINSTALL_DATADIR=share/qt6 \
+  -DINSTALL_INCLUDEDIR=include/qt6 \
+  -DINSTALL_MKSPECSDIR=lib/qt6/mkspecs \
+  -DINSTALL_EXAMPLESDIR=share/doc/qt6/examples \
+  -DQT_FEATURE_qtpdf_build=ON \
+  -DQT_FEATURE_qtpdf_quick_build=ON \
+  -DQT_FEATURE_qtpdf_widgets_build=ON \
+  -DQT_FEATURE_qtwebengine_build=ON \
+  -DQT_FEATURE_qtwebengine_core_build=ON \
+  -DQT_FEATURE_qtwebengine_quick_build=ON \
+  -DQT_FEATURE_qtwebengine_widgets_build=ON \
+  -DQT_FEATURE_webengine_jumbo_build=OFF \
+  -DQT_FEATURE_webengine_pepper_plugins=ON \
+  -DQT_FEATURE_webengine_printing_and_pdf=ON \
+  -DQT_FEATURE_webengine_qt_freetype=OFF \
+  -DQT_FEATURE_webengine_qt_libjpeg=OFF \
+  -DQT_FEATURE_webengine_qt_libpng=OFF \
+  -DQT_FEATURE_webengine_qt_zlib=OFF \
+  -DQT_FEATURE_webengine_system_ffmpeg=OFF \
+  -DQT_FEATURE_webengine_system_freetype=ON \
+  -DQT_FEATURE_webengine_system_glib=ON \
+  -DQT_FEATURE_webengine_system_harfbuzz=ON \
+  -DQT_FEATURE_webengine_system_icu=OFF \
+  -DQT_FEATURE_webengine_system_libevent=ON \
+  -DQT_FEATURE_webengine_system_libjpeg=OFF \
+  -DQT_FEATURE_webengine_system_libopenjpeg2=ON \
+  -DQT_FEATURE_webengine_system_libpci=OFF \
+  -DQT_FEATURE_webengine_system_libpng=OFF \
+  -DQT_FEATURE_webengine_system_libtiff=ON \
+  -DQT_FEATURE_webengine_system_libvpx=ON \
+  -DQT_FEATURE_webengine_system_libwebp=ON \
+  -DQT_FEATURE_webengine_system_libxml=ON \
+  -DQT_FEATURE_webengine_system_libxslt=ON \
+  -DQT_FEATURE_webengine_system_minizip=OFF \
+  -DQT_FEATURE_webengine_system_opus=ON \
+  -DQT_FEATURE_webengine_system_re2=ON \
+  -DQT_FEATURE_webengine_system_snappy=ON \
+  -DQT_FEATURE_webengine_system_zlib=OFF
+
+cmake --build build --target install --config Release -j${CPU_COUNT}
+
+pushd "${PREFIX}"
+
+mkdir -p bin
+
+if [[ -f "${SRC_DIR}"/build/user_facing_tool_links.txt ]]; then
+  for links in "${SRC_DIR}"/build/user_facing_tool_links.txt; do
+    while read _line; do
+      if [[ -n "${_line}" ]]; then
+        ln -sf ${_line}
+      fi
+    done < ${links}
+  done
+fi
