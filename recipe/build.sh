@@ -125,7 +125,12 @@ cmake --log-level STATUS -S"${SRC_DIR}/${PKG_NAME}" -Bbuild -GNinja ${CMAKE_ARGS
   -DQT_FEATURE_webengine_system_snappy=ON \
   -DQT_FEATURE_webengine_system_zlib=OFF
 
-cmake --build build --target install --config Release -j${CPU_COUNT}
+if [[ "${target_platform}" == linux-aarch64 ]]; then
+  # To prevent exhaust available RAM, leading to the -5 crash when mksnapshot is running.
+  cmake --build build --target install --config Release -j4
+else
+  cmake --build build --target install --config Release -j${CPU_COUNT}
+fi
 
 pushd "${PREFIX}"
 
