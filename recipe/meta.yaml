@@ -25,7 +25,7 @@ source:
       - patches/0010-Add-gnu-resource.patch                                # [linux]
 
 build:
-  number: 1
+  number: 0
   # https://doc.qt.io/qt-6/qt-releases.html#binary-compatibility
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}

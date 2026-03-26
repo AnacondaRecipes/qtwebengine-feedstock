@@ -8,5 +8,6 @@ channels:
   - https://staging.continuum.io/pbp/fs/qtwebsockets-feedstock/pr9/1fa36c1
   - https://staging.continuum.io/pbp/fs/qtwebchannel-feedstock/pr9/069c481
   - https://staging.continuum.io/pbp/fs/qttools-feedstock/pr9/dd11dd1
-  - https://staging.continuum.io/pbp/fs/spirv-headers-feedstock/pr2/4373496
-  - https://staging.continuum.io/pbp/fs/spirv-tools-feedstock/pr3/4430b53
+
+build_env_vars:
+  ANACONDA_ROCKET_ENABLE_PY314 : yes
