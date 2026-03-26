@@ -1,0 +1,26 @@
+From 4eb329301275f804df48fe284c5ad3ea79949435 Mon Sep 17 00:00:00 2001
+From: Andrii Osipov <aosipov@anaconda.com>
+Date: Thu, 26 Mar 2026 04:09:38 -0700
+Subject: [PATCH] fix missing eglext angle include on linux for chromium
+
+---
+ src/3rdparty/chromium/ui/gl/gl_fence_egl.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/3rdparty/chromium/ui/gl/gl_fence_egl.cc b/src/3rdparty/chromium/ui/gl/gl_fence_egl.cc
+index f480ad2528..0b10ff0011 100644
+--- a/src/3rdparty/chromium/ui/gl/gl_fence_egl.cc
++++ b/src/3rdparty/chromium/ui/gl/gl_fence_egl.cc
+@@ -8,6 +8,9 @@
+ #include "base/notreached.h"
+ #include "ui/gl/egl_util.h"
+ #include "ui/gl/gl_bindings.h"
++// EGL_SYNC_GLOBAL_FENCE_ANGLE is an ANGLE-specific extension not present
++// in sysroot EGL headers on Linux platforms — include it explicitly.
++#include "third_party/angle/include/EGL/eglext_angle.h"
+ #include "ui/gl/gl_bindings_autogen_gl.h"
+ #include "ui/gl/gl_context.h"
+ #include "ui/gl/gl_display.h"
+-- 
+2.39.3 (Apple Git-146)
+
