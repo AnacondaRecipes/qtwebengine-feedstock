@@ -25,7 +25,7 @@ source:
       - patches/0010-Add-gnu-resource.patch                                # [linux]
       - patches/0011-fix-missing-eglext-angle-include-on-linux-for-chromi.patch  # [linux]
       #- patches/0012-prevent-mksnapshot-run-with-unlimited-threads.patch  # [linux and aarch64]
-      #- patches/0012-debug-run.py-with-mksnapshot.patch
+      - patches/0012-debug-run.py-with-mksnapshot.patch
 
 build:
   number: 0
