@@ -18,7 +18,7 @@ index 4c6f7fb4b1..6cfc2acaf2 100644
 -        "--concurrent-turbofan-max-threads=0",
 +        # To prevent exhaust available RAM, leading to the -5 crash when mksnapshot is running.
 +        # --concurrent-turbofan-max-threads=0 (unlimited threads)
-+        "--concurrent-turbofan-max-threads=4",
++        "--concurrent-turbofan-max-threads=1",
        ]
      }
  
