@@ -7,7 +7,6 @@ echo 'PAGE_SIZE: '
 getconf PAGE_SIZE
 echo '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
 
-exit 1
 if [[ "${target_platform}" == linux-* ]]; then
   CMAKE_ARGS="
     ${CMAKE_ARGS}
