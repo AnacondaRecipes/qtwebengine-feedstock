@@ -47,6 +47,7 @@ build:
     - "*/api-ms-win-power-base-l1-1-0.dll"         # [win]
     - "*/api-ms-win-shcore-scaling-l1-1-1.dll"     # [win]
   skip: true  # [not (linux and aarch64)]
+  skip: true  # [py>=314]
 
 requirements:
   build:
