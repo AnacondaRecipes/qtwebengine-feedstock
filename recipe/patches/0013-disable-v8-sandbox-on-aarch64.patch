@@ -1,0 +1,11 @@
+diff --git a/src/3rdparty/chromium/v8/BUILD.gn b/src/3rdparty/chromium/v8/BUILD.gn
+--- a/src/3rdparty/chromium/v8/BUILD.gn
++++ b/src/3rdparty/chromium/v8/BUILD.gn
+@@ -1,7 +1,7 @@
+   # Enable the V8 sandbox.
+   # Sets -DV8_ENABLE_SANDBOX.
+-  v8_enable_sandbox = ""
++  v8_enable_sandbox = false
+ 
+   # Enable experimental hardware support for the V8 sandbox if available.
+   # Sets -DV8_ENABLE_SANDBOX_HARDWARE_SUPPORT
