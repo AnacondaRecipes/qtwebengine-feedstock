@@ -1,5 +1,5 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Conda build <conda@localhost>
+From af9040fd8beb95070a21531f8a647e1d2296735a Mon Sep 17 00:00:00 2001
+From: Andrii Osipov <aosipov@anaconda.com>
 Date: Mon, 1 Jan 2024 00:00:00 +0000
 Subject: [PATCH] Pass v8_enable_sandbox=false to GN
 
