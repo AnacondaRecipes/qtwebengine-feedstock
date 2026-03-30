@@ -24,10 +24,7 @@ source:
       # qtwebengine/src/3rdparty/chromium/third_party/libdrm/src/xf86drm.c:362:9: error: implicit declaration of function 'asprintf'; did you mean 'vsprintf'?
       - patches/0010-Add-gnu-resource.patch                                # [linux]
       - patches/0011-fix-missing-eglext-angle-include-on-linux-for-chromi.patch  # [linux]
-      #- patches/0013-disable-v8-sandbox-gn-arg.patch  # [linux and aarch64]
-      - patches/0014-v8-segmented-table-linux-aarch64-64kb.patch  # [linux and aarch64]
-      #- patches/0012-prevent-mksnapshot-run-with-unlimited-threads.patch  # [linux and aarch64]
-      #- patches/0012-debug-run.py-with-mksnapshot.patch
+      - patches/0012-v8-segmented-table-linux-aarch64-64kb.patch  # [linux and aarch64]
 
 build:
   number: 0
@@ -49,7 +46,6 @@ build:
     - "*/api-ms-win-core-winrt-l1-1-0.dll"         # [win]
     - "*/api-ms-win-power-base-l1-1-0.dll"         # [win]
     - "*/api-ms-win-shcore-scaling-l1-1-1.dll"     # [win]
-  skip: true  # [not (linux and aarch64)]
 
 requirements:
   build:
