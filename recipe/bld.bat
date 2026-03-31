@@ -85,3 +85,5 @@ if errorlevel 1 exit 1
 
 del %LIBRARY_PREFIX%\bin\QtWebEngineProcess
 if errorlevel 1 exit 1
+del %LIBRARY_PREFIX%\bin\QtWebEngineProcess6
+if errorlevel 1 exit 1
