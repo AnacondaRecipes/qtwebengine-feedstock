@@ -67,6 +67,7 @@ requirements:
     - nodejs  # [unix]
     # On win nodejs 24 crashed without output
     # RuntimeError: Command '...node.exe ...@rollup/wasm-node/dist/bin/rollup ...'
+    # Not work with nodejs 25 too...
     - nodejs >=20,<21  # [win]
     - perl
   host:
@@ -89,7 +90,7 @@ requirements:
     - gtk2 2.24.33                                 # [linux]
     - lcms2 {{ lcms2 }}                            # [linux]
     # CUPS library (needed for QT_FEATURE_webengine_printing_and_pdf=ON)
-    - libcups 2.4                                  # [linux]
+    - libcups {{ libcups }}                        # [linux]
     - libdrm {{ libdrm }}                          # [linux]
     - libgl-devel {{ libgl }}                      # [linux]
     - libglx-devel {{ libglx }}                    # [linux]
@@ -118,7 +119,7 @@ requirements:
     - glib {{ glib }}
     # chromium
     - spirv-headers 1.4.341.0
-    - spirv-tools 2026.1
+    - spirv-tools {{ spirv_tools }}
     # Needs to be in hosts to allow QtPdf to build but is really a build dependency so no need to add to runtime deps.
     - html5lib 1.1
     - harfbuzz {{ harfbuzz }}
