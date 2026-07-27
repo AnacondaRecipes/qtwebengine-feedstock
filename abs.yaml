@@ -1,4 +1,1 @@
 task_timeout: 86000
-
-channels:
-  - https://staging.continuum.io/preprod-pbp/fs/mesalib-feedstock/pr7/c528516
