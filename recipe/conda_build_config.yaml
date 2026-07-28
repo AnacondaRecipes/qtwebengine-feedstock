@@ -14,12 +14,18 @@ cxx_compiler:  # [win]
 # XCode 15.0 came with SDK 14.0 and clang 15
 # https://en.wikipedia.org/wiki/Xcode
 c_compiler_version:
-  - 20                 # [osx]
+  - 22                 # [osx]
 cxx_compiler_version:
-  - 20                 # [osx]
+  - 22                 # [osx]
 
 CONDA_BUILD_SYSROOT:
   - /Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk  # [osx]
 
 libvulkan:
   - 1.4
+libxml2:
+  - 2.15.3
+# qtbase -> libpq -> openldap -> libevent 2.1.12
+# If we update qtbase we will need to update all qt packages
+libevent:
+  - 2.1.12
