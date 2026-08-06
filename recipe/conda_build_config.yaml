@@ -25,6 +25,8 @@ libvulkan:
   - 1.4
 libxml2:
   - 2.15.3
+mesalib:
+  - 26.1.6
 # qtbase -> libpq -> openldap -> libevent 2.1.12
 # If we update qtbase we will need to update all qt packages
 libevent:
