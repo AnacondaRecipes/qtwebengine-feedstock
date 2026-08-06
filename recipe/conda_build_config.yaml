@@ -25,6 +25,7 @@ libvulkan:
   - 1.4
 libxml2:
   - 2.15.3
+# TODO: remove once conda_build_config.yaml pins mesalib to 26
 mesalib:
   - 26.1.6
 # qtbase -> libpq -> openldap -> libevent 2.1.12
