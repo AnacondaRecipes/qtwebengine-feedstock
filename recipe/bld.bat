@@ -1,6 +1,13 @@
 @REM https://bugreports.qt.io/browse/QTBUG-107009
 set "PATH=%SRC_DIR%\build\lib\qt6\bin;%PATH%"
-subst Y: "%SRC_DIR%"
+
+@REM Y: is a short-path alias for the source tree, because Chromium does not cope
+@REM with long paths. It is global machine state that survives failed builds, and
+@REM subst refuses to reassign a drive that is already mapped, so clear any
+@REM leftover mapping first. Otherwise the configure silently writes into a
+@REM previous build tree and the build below fails with no output at all.
+subst Y: /D >nul 2>&1
+subst Y: "%SRC_DIR%" || exit 1
 del /S /Q /F %LIBRARY_INC%\openssl
 del /S /Q /F %LIBRARY_INC%\absl
 del /S /Q /F %LIBRARY_INC%\zlib.h
