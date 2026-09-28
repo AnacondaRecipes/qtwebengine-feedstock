@@ -1,1 +1,2 @@
-task_timeout: 86000
+# Max timeout (48hr) needed for win-arm64 specifically. 
+task_timeout: 172800
