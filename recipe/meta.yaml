@@ -25,9 +25,10 @@ source:
       - patches/0010-Add-gnu-resource.patch                                # [linux]
       - patches/0011-fix-missing-eglext-angle-include-on-linux-for-chromi.patch  # [linux]
       - patches/0012-v8-segmented-table-linux-aarch64-64kb.patch  # [linux and aarch64]
+      - patches/0013-chromium-blocklist-emudhra.patch
 
 build:
-  number: 5
+  number: 6
   # https://doc.qt.io/qt-6/qt-releases.html#binary-compatibility
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
