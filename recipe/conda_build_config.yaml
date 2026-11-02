@@ -23,5 +23,3 @@ CONDA_BUILD_SYSROOT:
 
 libvulkan:
   - 1.4
-libxml2:
-  - 2.15.3
