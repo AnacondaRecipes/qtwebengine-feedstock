@@ -1,0 +1,31 @@
+From 313f072f8740df2f3afed501c1de68996649166c Mon Sep 17 00:00:00 2001
+From: vkhomits <vkhomits@anaconda.com>
+Date: Wed, 18 Nov 2026 11:35:28 +0200
+Subject: [PATCH] Skip the Metal toolchain configure check on macOS
+
+QtWebEngine 6.140 added a hard configure check that requires the separately
+downloadable Metal toolchain (xcrun metal). Conda builds use the macOS
+CommandLineTools SDK, which does not ship it, and our configuration builds
+no Metal shaders (skia_use_metal=false), so the check does not apply here.
+---
+ configure.cmake | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/configure.cmake b/configure.cmake
+index 4fa77bb..67f4ebc 100644
+--- a/configure.cmake
++++ b/configure.cmake
+@@ -534,7 +534,9 @@ qt_webengine_configure_check("windows-sdk"
+ unset(sdk_minor)
+ 
+ if(APPLE)
+-    qt_webengine_check_for_metal_toolchain()
++    # conda builds use the CommandLineTools SDK, which does not ship the separately
++    # downloadable Metal toolchain, and we compile no Metal shaders (skia_use_metal=false).
++    set(TEST_metal_toolchain TRUE)
+ endif()
+ 
+ qt_webengine_configure_check("metal-toolchain"
+-- 
+2.45.2
+
