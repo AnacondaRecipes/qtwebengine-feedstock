@@ -1,13 +1,16 @@
 {% set name = "qtwebengine" %}
-{% set version = "6.11.0" %}
+{% set version = "6.140.0" %}
+# QtWebEngine has its own versioning since 6.12; 6.140.0 is built against Qt 6.12.0
+# (qtwebengine/6.140.0/release-note.md), so the Qt deps below use qt_version.
+{% set qt_version = "6.12.0" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  - url: https://download.qt.io/official_releases/qt/{{ version.rpartition('.')[0] }}/{{ version }}/submodules/{{ name }}-everywhere-src-{{ version }}.tar.xz
-    sha256: 63b921c8b2dd59152ced9a796676010166df044588ee00ef9429dc2fd2146736
+  - url: https://download.qt.io/official_releases/{{ name }}/{{ version.rpartition('.')[0] }}/{{ version }}/src/{{ name }}-everywhere-src-{{ version }}.tar.xz
+    sha256: 82352854a1d01dfe6abeefaf023554e4722c1d7df48ba3ce0078f6c0a9c7e1a3
     folder: {{ name }}
     patches:
       - patches/0001-chromium-add-conda-CDT-include-paths-to-include_dirs.patch
@@ -15,7 +18,6 @@ source:
       - patches/0003-allow-building-with-non-apple-clang-version.patch     # [osx]
       - patches/0004-chromium-force-settings-to-build-without-xcode.patch  # [osx]
       - patches/0005-set-rpath-on-generators-on-osx.patch                  # [osx]
-      - patches/0006-disable-newer-glibc-features.patch                    # [linux and aarch64]
       - patches/0007-chromium-fix-readelf-path.patch                       # [linux]
       - patches/0008-use-binary-input-for-gperf-on-Windows.patch           # [win]
       - patches/0009-Disable-ScreenCaptureKit-on-OSX.patch                 # [osx]
@@ -25,16 +27,15 @@ source:
       - patches/0010-Add-gnu-resource.patch                                # [linux]
       - patches/0011-fix-missing-eglext-angle-include-on-linux-for-chromi.patch  # [linux]
       - patches/0012-v8-segmented-table-linux-aarch64-64kb.patch  # [linux and aarch64]
-      - patches/0013-chromium-blocklist-emudhra.patch
+      - patches/0013-skip-metal-toolchain-check-on-osx.patch       # [osx]
 
 build:
-  number: 6
+  number: 0
   # https://doc.qt.io/qt-6/qt-releases.html#binary-compatibility
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
   ignore_run_exports_from:
     # Vendored protobuf is bundled in the Chromium build so no need to require a conda package for it.
-    # Remove this once we upgrade to Qt 6.10.
     - libprotobuf                                  # [linux]
     # These packages are only needed at build time
     - qttools
@@ -73,12 +74,12 @@ requirements:
     - perl
   host:
     ### Qt Deps ###
-    - qtbase-devel {{ version }}
-    - qtdeclarative {{ version }}
-    - qtwebchannel {{ version }}
-    - qtwebsockets {{ version }}
+    - qtbase-devel {{ qt_version }}
+    - qtdeclarative {{ qt_version }}
+    - qtwebchannel {{ qt_version }}
+    - qtwebsockets {{ qt_version }}
     # Qt tools Designer is required to compile designer plugin.
-    - qttools {{ version }}
+    - qttools {{ qt_version }}
 
     ### Linux Deps ###
     # ALSA audio library (needed for QT_FEATURE_webengine_system_alsa=ON)
@@ -146,7 +147,7 @@ test:
     - {{ compiler('cxx') }}
     - make                              # [unix]
     - pkg-config                        # [unix]
-    - qtbase-devel {{ version }}
+    - qtbase-devel {{ qt_version }}
   files:
     - test/main-qtwebengine.cpp
     - test/qml.qrc
