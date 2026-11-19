@@ -65,7 +65,11 @@ rm -rf ${PREFIX}/include/jconfig.h
 rm -rf ${PREFIX}/include/jerror.h
 rm -rf ${PREFIX}/include/jmorecfg.h
 rm -rf ${PREFIX}/include/jpeglib.h
-
+# conda's libexpat (pulled in via python/fontconfig) installs ${PREFIX}/include/expat_config.h with
+# HAVE_ARC4RANDOM_BUF defined. It shadows Chromium's own third_party/expat/include/expat_config/expat_config.h,
+# so the vendored xmlparse.c calls writeRandomBytes_arc4random_buf, which is not compiled into the vendored
+# libexpat.a (Chromium builds only random_dev_urandom.c). This breaks linking of v8_context_snapshot_generator.
+rm -f ${PREFIX}/include/expat_config.h
 # QT_FEATURE_webengine_system_icu has to be OFF or else icudtl.dat doesn't get installed
 # https://github.com/qt/qtwebengine/blob/6.9.1/src/core/api/CMakeLists.txt#L186
 #
